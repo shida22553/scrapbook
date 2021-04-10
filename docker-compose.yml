@@ -1,0 +1,14 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+    image: node:14.15.4
+    working_dir: /myapp
+    volumes:
+      - ./frontend:/myapp
+      - node_modules_volume:/myapp/node_modules
+    ports:
+      - "8080:3000"
+    command: yarn dev
+volumes:
+  node_modules_volume:
