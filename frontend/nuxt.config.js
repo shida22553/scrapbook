@@ -43,7 +43,24 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyBlHK5_pv_1iej09Ut8WvlwgFYhahMkrbs',
+          authDomain: 'my-scrapbook-dev.firebaseapp.com',
+          databaseURL: 'https://my-scrapbook-dev.firebaseio.com',
+          projectId: 'my-scrapbook-dev',
+          storageBucket: 'my-scrapbook-dev.appspot.com',
+          messagingSenderId: '262259554299',
+          appId: '1:262259554299:web:b2ece21f7d94a27ed2fd5e'
+        },
+        services: {
+          auth: true
+        }
+      }
+    ]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
