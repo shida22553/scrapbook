@@ -57,7 +57,12 @@ export default {
           appId: '1:262259554299:web:b2ece21f7d94a27ed2fd5e'
         },
         services: {
-          auth: true
+          auth: {
+            initialize: {
+              onAuthStateChangedMutation: 'ON_AUTH_STATE_CHANGED_MUTATION',
+              subscribeManually: false
+            }
+          }
         }
       }
     ]
