@@ -9,5 +9,14 @@ services:
     ports:
       - "3000:3000"
     command: yarn dev
+  api:
+    build: ./docker/api
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src/api:/myapp/src/api
+    ports:
+      - "8080:8080"
+    command: go run src/api/main.go
 volumes:
   node_modules_volume:
