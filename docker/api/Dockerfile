@@ -7,7 +7,6 @@ RUN go mod init shida22552/my-scrapbook
 RUN go get github.com/gin-gonic/gin
 RUN go get github.com/go-sql-driver/mysql
 RUN go get github.com/jinzhu/gorm
+RUN go get github.com/cosmtrek/air
 
 COPY . /myapp
-
-CMD go run main.go

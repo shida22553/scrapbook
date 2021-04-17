@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	firebase "firebase.google.com/go"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/option"
 	"gorm.io/driver/mysql"
@@ -78,6 +79,7 @@ func authMiddleware() gin.HandlerFunc {
 
 		// クライアントから送られてきた JWT 取得
 		authHeader := c.Request.Header.Get("Authorization")
+		fmt.Printf("authHeader: %v\n", c.Request.Header)
 		idToken := strings.Replace(authHeader, "Bearer ", "", 1)
 
 		// JWT の検証
@@ -89,12 +91,15 @@ func authMiddleware() gin.HandlerFunc {
 			return
 		}
 		log.Printf("Verified ID token: %v\n", token)
+		c.Next()
 	}
 }
 
 func main() {
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.Use(authMiddleware())
+
 	db := getGormConnect()
 	db.AutoMigrate(&User{})
 	closeDb, err := db.DB()

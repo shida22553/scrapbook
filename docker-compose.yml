@@ -21,7 +21,7 @@ services:
       - ./api:/myapp
     ports:
       - "8080:8080"
-    command: ./wait-for-it.sh db:3306 -- go run main.go
+    command: ./wait-for-it.sh db:3306 -- air
     depends_on:
       - "db"
   db:
