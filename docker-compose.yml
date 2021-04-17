@@ -3,6 +3,8 @@ services:
   frontend:
     build: ./docker/frontend
     working_dir: /myapp
+    environment:
+      API_BASE_URL: "${API_BASE_URL}"
     volumes:
       - ./docker/frontend:/myapp
       - node_modules_volume:/myapp/node_modules
@@ -11,6 +13,8 @@ services:
     command: yarn dev
   api:
     build: ./docker/api
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: "${GOOGLE_APPLICATION_CREDENTIALS}"
     stdin_open: true
     tty: true
     volumes:
