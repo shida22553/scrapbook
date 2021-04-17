@@ -2,29 +2,33 @@
   <div>
     <h1>Welcome <span v-if="currentUser">{{ currentUser.email }}</span></h1>
     <v-text-field
-      v-model='user.email'
-      label='E-mail'
-    ></v-text-field>
+      v-model="user.email"
+      label="E-mail"
+    />
     <v-text-field
-      v-model='user.password'
-      label='Password'
-    ></v-text-field>
-    <v-btn class='mr-4' @click='signin'>signin</v-btn>
+      v-model="user.password"
+      label="Password"
+    />
+    <v-btn class="mr-4" @click="signin">
+      signin
+    </v-btn>
     <hr>
     <v-text-field
-      v-model='newUser.name'
-      :counter='10'
-      label='Name'
-    ></v-text-field>
+      v-model="newUser.name"
+      :counter="10"
+      label="Name"
+    />
     <v-text-field
-      v-model='newUser.email'
-      label='E-mail'
-    ></v-text-field>
+      v-model="newUser.email"
+      label="E-mail"
+    />
     <v-text-field
-      v-model='newUser.password'
-      label='Password'
-    ></v-text-field>
-    <v-btn class='mr-4' @click='signup'>signup</v-btn>
+      v-model="newUser.password"
+      label="Password"
+    />
+    <v-btn class="mr-4" @click="signup">
+      signup
+    </v-btn>
   </div>
 </template>
 
@@ -33,7 +37,7 @@ export default {
   data () {
     return {
       user: {
-        email: '41243251@example.com',
+        email: '88438482@example.com',
         password: 'password'
       },
       newUser: {
@@ -43,7 +47,16 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
+    // const self = this
+    // await self.$axios
+    //   .$get('/users')
+    //   .then(function (response) {
+    //     console.log(response)
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error)
+    //   })
   },
   computed: {
     currentUser () {
@@ -53,12 +66,39 @@ export default {
   methods: {
     async signup () {
       const self = this
-      await self.$fire.auth.createUserWithEmailAndPassword(self.newUser.email, self.newUser.password)
+      const userCredential = await self.$fire.auth.createUserWithEmailAndPassword(self.newUser.email, self.newUser.password)
+      const token = await userCredential.user.getIdToken(true)
+      await self.$axios
+        .$post('/users', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     async signin () {
       const self = this
-      await self.$fire.auth.signInWithEmailAndPassword(self.user.email, self.user.password)
-      // const token = await userCredential.user.getIdToken(true)
+      const userCredential = await self.$fire.auth.signInWithEmailAndPassword(self.user.email, self.user.password)
+      const token = await userCredential.user.getIdToken(true)
+      console.log(token)
+      await self.$axios
+        .$get('/users', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          data: {}
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }

@@ -79,7 +79,6 @@ func authMiddleware() gin.HandlerFunc {
 
 		// クライアントから送られてきた JWT 取得
 		authHeader := c.Request.Header.Get("Authorization")
-		fmt.Printf("authHeader: %v\n", c.Request.Header)
 		idToken := strings.Replace(authHeader, "Bearer ", "", 1)
 
 		// JWT の検証
@@ -97,7 +96,10 @@ func authMiddleware() gin.HandlerFunc {
 
 func main() {
 	r := gin.Default()
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
+	r.Use(cors.New(config))
 	r.Use(authMiddleware())
 
 	db := getGormConnect()
