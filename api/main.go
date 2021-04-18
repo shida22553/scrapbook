@@ -18,15 +18,14 @@ import (
 
 type User struct {
 	gorm.Model
-	UId  string
+	Uid  string
 	Name string
 }
 
 func insertUser(user *User) {
 	db := getGormConnect()
-
 	// insert文
-	db.Create(&user)
+	db.Select("Uid", "Name").Create(&user)
 	closeDb, err := db.DB()
 
 	if err != nil {
@@ -51,7 +50,7 @@ func findAllUser() []User {
 }
 
 func getGormConnect() *gorm.DB {
-	dsn := "user:password@tcp(db:3306)/my-scrapbook"
+	dsn := "user:password@tcp(db:3306)/my-scrapbook?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -90,6 +89,7 @@ func authMiddleware() gin.HandlerFunc {
 			return
 		}
 		log.Printf("Verified ID token: %v\n", token)
+		c.Set("uid", token.UID)
 		c.Next()
 	}
 }
@@ -118,6 +118,7 @@ func main() {
 	r.POST("/users", func(c *gin.Context) {
 		user := User{
 			Name: "test",
+			Uid:  c.MustGet("uid").(string),
 		}
 		insertUser(&user)
 		c.JSON(http.StatusOK, user)
