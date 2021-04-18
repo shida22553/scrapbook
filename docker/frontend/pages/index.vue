@@ -29,6 +29,9 @@
     <v-btn class="mr-4" @click="signup">
       signup
     </v-btn>
+    <v-btn class="mr-4" @click="signout">
+      signout
+    </v-btn>
   </div>
 </template>
 
@@ -48,15 +51,23 @@ export default {
     }
   },
   async mounted () {
-    // const self = this
-    // await self.$axios
-    //   .$get('/users')
-    //   .then(function (response) {
-    //     console.log(response)
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error)
-    //   })
+    const self = this
+    const token = await self.$fire.auth.currentUser?.getIdToken(false)
+    if (token != null) {
+      await self.$axios
+        .$get('/users', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          data: {}
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
   },
   computed: {
     currentUser () {
@@ -85,7 +96,6 @@ export default {
       const self = this
       const userCredential = await self.$fire.auth.signInWithEmailAndPassword(self.user.email, self.user.password)
       const token = await userCredential.user.getIdToken(true)
-      console.log(token)
       await self.$axios
         .$get('/users', {
           headers: {
@@ -99,6 +109,11 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    async signout () {
+      const self = this
+      await self.$fire.auth.signOut()
+      location.reload()
     }
   }
 }
