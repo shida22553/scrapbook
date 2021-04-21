@@ -22,6 +22,13 @@ type User struct {
 	Name string
 }
 
+type Cutting struct {
+	gorm.Model
+	Note   string `gorm:"text"`
+	UserID uint
+	User   User
+}
+
 func insertUser(user *User) {
 	db := getGormConnect()
 	// insert文
@@ -47,6 +54,46 @@ func findAllUser() []User {
 	}
 	defer closeDb.Close()
 	return users
+}
+
+func findUser(uid string) User {
+	db := getGormConnect()
+	var user User
+	db.First(&user, "uid = ?", uid)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+	return user
+}
+
+func insertCutting(cutting *Cutting) {
+	db := getGormConnect()
+	// insert文
+	db.Create(&cutting)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+}
+
+func findAllCuttings(user User) []Cutting {
+	db := getGormConnect()
+	var cuttings []Cutting
+
+	// select文
+	db.Where("user_id = ?", user.ID).Find(&cuttings)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+	return cuttings
 }
 
 func getGormConnect() *gorm.DB {
@@ -104,6 +151,7 @@ func main() {
 
 	db := getGormConnect()
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Cutting{})
 	closeDb, err := db.DB()
 
 	if err != nil {
@@ -122,6 +170,21 @@ func main() {
 		}
 		insertUser(&user)
 		c.JSON(http.StatusOK, user)
+	})
+	r.GET("/cuttings", func(c *gin.Context) {
+		uid := c.MustGet("uid").(string)
+		user := findUser(uid)
+		cuttings := findAllCuttings(user)
+		c.JSON(http.StatusOK, cuttings)
+	})
+	r.POST("/cuttings", func(c *gin.Context) {
+		uid := c.MustGet("uid").(string)
+		user := findUser(uid)
+		var cutting Cutting
+		c.BindJSON(&cutting)
+		cutting.UserID = user.ID
+		insertCutting(&cutting)
+		c.JSON(http.StatusOK, cutting)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
