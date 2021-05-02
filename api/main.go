@@ -29,6 +29,10 @@ type Cutting struct {
 	User   User
 }
 
+type CuttingPutRequest struct {
+	Note string `json:"note"`
+}
+
 func insertUser(user *User) {
 	db := getGormConnect()
 	// insert文
@@ -81,6 +85,17 @@ func insertCutting(cutting *Cutting) {
 	defer closeDb.Close()
 }
 
+func updateCutting(cutting *Cutting) {
+	db := getGormConnect()
+	db.Save(&cutting)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+}
+
 func findAllCuttings(user User) []Cutting {
 	db := getGormConnect()
 	var cuttings []Cutting
@@ -94,6 +109,21 @@ func findAllCuttings(user User) []Cutting {
 	}
 	defer closeDb.Close()
 	return cuttings
+}
+
+func findCutting(user User, id string) Cutting {
+	db := getGormConnect()
+	var cutting Cutting
+
+	// select文
+	db.Where("user_id = ? and id = ?", user.ID, id).Find(&cutting)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+	return cutting
 }
 
 func getGormConnect() *gorm.DB {
@@ -177,6 +207,12 @@ func main() {
 		cuttings := findAllCuttings(user)
 		c.JSON(http.StatusOK, cuttings)
 	})
+	r.GET("/cuttings/:id", func(c *gin.Context) {
+		uid := c.MustGet("uid").(string)
+		user := findUser(uid)
+		cutting := findCutting(user, c.Param("id"))
+		c.JSON(http.StatusOK, cutting)
+	})
 	r.POST("/cuttings", func(c *gin.Context) {
 		uid := c.MustGet("uid").(string)
 		user := findUser(uid)
@@ -184,6 +220,16 @@ func main() {
 		c.BindJSON(&cutting)
 		cutting.UserID = user.ID
 		insertCutting(&cutting)
+		c.JSON(http.StatusOK, cutting)
+	})
+	r.PUT("/cuttings/:id", func(c *gin.Context) {
+		uid := c.MustGet("uid").(string)
+		user := findUser(uid)
+		cutting := findCutting(user, c.Param("id"))
+		requestBody := CuttingPutRequest{}
+		c.Bind(&requestBody)
+		cutting.Note = requestBody.Note
+		updateCutting(&cutting)
 		c.JSON(http.StatusOK, cutting)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

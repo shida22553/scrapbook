@@ -1,27 +1,19 @@
 <template>
   <div>
-    <h1>Welcome <span v-if="currentUser">{{ currentUser.email }}</span></h1>
-    <v-btn class="mr-4" @click="signout">
-      signout
+    <v-textarea
+      label="body"
+      v-model="cuttingNote"
+    ></v-textarea>
+    <v-btn class="mr-4" @click="update">
+      update
     </v-btn>
-    <div v-if="currentUser != null">
-      <v-textarea
-        label="body"
-        v-model="cuttingNote"
-      ></v-textarea>
-      <v-btn class="mr-4" @click="stick">
-        stick
-      </v-btn>
-      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :note="cutting.Note" :id="cutting.ID"></Cutting>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   data () {
     return {
-      cuttings: [],
       cuttingNote: ''
     }
   },
@@ -30,14 +22,14 @@ export default {
     const token = await self.$fire.auth.currentUser?.getIdToken(true)
     if (token != null) {
       await self.$axios
-        .$get('/cuttings', {
+        .$get(`/cuttings/${self.$route.params.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           },
           data: {}
         })
         .then(function (response) {
-          self.cuttings = response
+          self.cuttingNote = response.Note
           console.log(response)
         })
         .catch(function (error) {
@@ -45,22 +37,12 @@ export default {
         })
     }
   },
-  computed: {
-    currentUser () {
-      return this.$store.state.user
-    }
-  },
   methods: {
-    async signout () {
-      const self = this
-      await self.$fire.auth.signOut()
-      location.reload()
-    },
-    async stick () {
+    async update () {
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
-        .$post('/cuttings', {
+        .$put(`/cuttings/${self.$route.params.id}`, {
           note: self.cuttingNote
         }, {
           headers: {
@@ -69,7 +51,7 @@ export default {
         })
         .then(function (response) {
           console.log(response)
-          self.cuttingNote = ''
+          self.$router.push('/')
         })
         .catch(function (error) {
           console.log(error)
