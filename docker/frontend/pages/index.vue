@@ -12,9 +12,7 @@
       <v-btn class="mr-4" @click="stick">
         stick
       </v-btn>
-      <p v-for="cutting in cuttings" v-bind:key="cutting.id">
-        {{ cutting.note }}
-      </p>
+      <Cutting v-for="cutting in cuttings" :key="cutting.id" :note="cutting.Note"></Cutting>
     </div>
   </div>
 </template>
@@ -39,7 +37,7 @@ export default {
           data: {}
         })
         .then(function (response) {
-          self.cuttings = response.data
+          self.cuttings = response
           console.log(response)
         })
         .catch(function (error) {
