@@ -13,36 +13,24 @@
         stick
       </v-btn>
       <Cutting v-for="cutting in cuttings" :key="cutting.ID" :note="cutting.Note" :id="cutting.ID"></Cutting>
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     </div>
   </div>
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
+
 export default {
+  components: {
+    InfiniteLoading
+  },
   data () {
     return {
       cuttings: [],
-      cuttingNote: ''
-    }
-  },
-  async mounted () {
-    const self = this
-    const token = await self.$fire.auth.currentUser?.getIdToken(true)
-    if (token != null) {
-      await self.$axios
-        .$get('/cuttings', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          data: {}
-        })
-        .then(function (response) {
-          self.cuttings = response
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      cuttingNote: '',
+      page: 1,
+      pageSize: 5
     }
   },
   computed: {
@@ -70,6 +58,33 @@ export default {
         .then(function (response) {
           console.log(response)
           self.cuttingNote = ''
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    async infiniteHandler ($state) {
+      const self = this
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$get('/cuttings', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          params: {
+            page: self.page,
+            pageSize: self.pageSize
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          if (response.length) {
+            self.page += 1
+            self.cuttings.push(...response)
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
         })
         .catch(function (error) {
           console.log(error)

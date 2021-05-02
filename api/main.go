@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	firebase "firebase.google.com/go"
@@ -31,6 +32,12 @@ type Cutting struct {
 
 type CuttingPutRequest struct {
 	Note string `json:"note"`
+}
+
+type CuttingsGetRequest struct {
+	UserID   uint
+	Page     int
+	PageSize int
 }
 
 func insertUser(user *User) {
@@ -107,8 +114,7 @@ func deleteCutting(cutting *Cutting) {
 	defer closeDb.Close()
 }
 
-func findAllCuttings(user User) []Cutting {
-	db := getGormConnect()
+func findAllCuttings(user User, db *gorm.DB) []Cutting {
 	var cuttings []Cutting
 
 	// select文
@@ -135,6 +141,20 @@ func findCutting(user User, id string) Cutting {
 	}
 	defer closeDb.Close()
 	return cutting
+}
+
+func paginate(page int, pageSize int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		switch {
+		case pageSize > 100:
+			pageSize = 100
+		case pageSize <= 0:
+			pageSize = 10
+		}
+
+		offset := (page - 1) * pageSize
+		return db.Offset(offset).Limit(pageSize)
+	}
 }
 
 func getGormConnect() *gorm.DB {
@@ -213,9 +233,12 @@ func main() {
 		c.JSON(http.StatusOK, user)
 	})
 	r.GET("/cuttings", func(c *gin.Context) {
+		page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+		pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+		db := getGormConnect().Scopes(paginate(page, pageSize))
 		uid := c.MustGet("uid").(string)
 		user := findUser(uid)
-		cuttings := findAllCuttings(user)
+		cuttings := findAllCuttings(user, db.Order("ID desc"))
 		c.JSON(http.StatusOK, cuttings)
 	})
 	r.GET("/cuttings/:id", func(c *gin.Context) {
@@ -238,7 +261,7 @@ func main() {
 		user := findUser(uid)
 		cutting := findCutting(user, c.Param("id"))
 		requestBody := CuttingPutRequest{}
-		c.Bind(&requestBody)
+		c.BindJSON(&requestBody)
 		cutting.Note = requestBody.Note
 		updateCutting(&cutting)
 		c.JSON(http.StatusOK, cutting)
