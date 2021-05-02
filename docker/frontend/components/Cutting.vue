@@ -18,6 +18,7 @@
       </nuxt-link>
       <v-btn
         text
+        @click="deleteCutting(id)"
       >
         Delete
       </v-btn>
@@ -35,6 +36,26 @@ export default {
     note: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    async deleteCutting (id) {
+      if (!confirm('Delete this?')) { return }
+      const self = this
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$delete(`/cuttings/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          location.reload()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }

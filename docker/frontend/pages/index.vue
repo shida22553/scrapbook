@@ -9,7 +9,7 @@
         label="body"
         v-model="cuttingNote"
       ></v-textarea>
-      <v-btn class="mr-4" @click="stick">
+      <v-btn class="mr-4" @click="create">
         stick
       </v-btn>
       <Cutting v-for="cutting in cuttings" :key="cutting.ID" :note="cutting.Note" :id="cutting.ID"></Cutting>
@@ -56,7 +56,7 @@ export default {
       await self.$fire.auth.signOut()
       location.reload()
     },
-    async stick () {
+    async create () {
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios

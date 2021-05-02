@@ -96,6 +96,17 @@ func updateCutting(cutting *Cutting) {
 	defer closeDb.Close()
 }
 
+func deleteCutting(cutting *Cutting) {
+	db := getGormConnect()
+	db.Delete(&cutting)
+	closeDb, err := db.DB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+	defer closeDb.Close()
+}
+
 func findAllCuttings(user User) []Cutting {
 	db := getGormConnect()
 	var cuttings []Cutting
@@ -231,6 +242,13 @@ func main() {
 		cutting.Note = requestBody.Note
 		updateCutting(&cutting)
 		c.JSON(http.StatusOK, cutting)
+	})
+	r.DELETE("/cuttings/:id", func(c *gin.Context) {
+		uid := c.MustGet("uid").(string)
+		user := findUser(uid)
+		cutting := findCutting(user, c.Param("id"))
+		deleteCutting(&cutting)
+		c.JSON(http.StatusOK, "ok")
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
