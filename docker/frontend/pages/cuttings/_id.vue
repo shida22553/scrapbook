@@ -4,7 +4,7 @@
       label="body"
       v-model="cuttingNote"
     ></v-textarea>
-    <v-btn class="mr-4" @click="update">
+    <v-btn class="mr-4" @click="updateCutting">
       update
     </v-btn>
     </div>
@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    async update () {
+    async updateCutting () {
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios

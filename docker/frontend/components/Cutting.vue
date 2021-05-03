@@ -9,7 +9,7 @@
 
     <v-divider class="mx-4"></v-divider>
     <v-card-actions>
-      <nuxt-link :to="`/cuttings/${id}`">
+      <nuxt-link class="text-decoration-none" :to="`/cuttings/${id}`">
         <v-btn
           text
         >
@@ -51,7 +51,7 @@ export default {
         })
         .then(function (response) {
           console.log(response)
-          location.reload()
+          self.$emit('delete', self.id)
         })
         .catch(function (error) {
           console.log(error)
