@@ -1,61 +1,46 @@
 <template>
   <v-card class="mx-auto my-4" max-width="374">
+    <div v-show="!isEditMode">
+      <v-card-text>
+        <div @click="isEditMode = true">
+          {{ cutting.Note }}
+        </div>
+      </v-card-text>
 
-    <v-card-text>
-      <div>
-        {{ note }}
-      </div>
-    </v-card-text>
-
-    <v-divider class="mx-4"></v-divider>
-    <v-card-actions>
-      <nuxt-link class="text-decoration-none" :to="`/cuttings/${id}`">
+      <v-divider class="mx-4"></v-divider>
+      <v-card-actions>
         <v-btn
           text
+          @click="$emit('deleteCutting', cutting.ID)"
         >
-          Edit
+          Delete
         </v-btn>
-      </nuxt-link>
-      <v-btn
-        text
-        @click="deleteCutting(id)"
-      >
-        Delete
-      </v-btn>
-    </v-card-actions>
+      </v-card-actions>
+    </div>
+    <div v-show="isEditMode">
+      <v-card-text>
+        <CuttingForm :initialCutting="cutting" @submit="updateCutting" @setEditMode="setEditMode"/>
+      </v-card-text>
+    </div>
   </v-card>
 </template>
 
 <script>
 export default {
   props: {
-    id: {
-      type: Number,
-      required: true
-    },
-    note: {
-      type: String,
-      required: true
+    cutting: Object
+  },
+  data () {
+    return {
+      isEditMode: false
     }
   },
   methods: {
-    async deleteCutting (id) {
-      if (!confirm('Delete this?')) { return }
-      const self = this
-      const token = await self.$fire.auth.currentUser?.getIdToken(true)
-      await self.$axios
-        .$delete(`/cuttings/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then(function (response) {
-          console.log(response)
-          self.$emit('delete', self.id)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+    setEditMode (editMode) {
+      this.isEditMode = editMode
+    },
+    updateCutting (cutting) {
+      this.$emit('updateCutting', cutting)
     }
   }
 }

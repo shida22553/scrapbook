@@ -5,14 +5,13 @@
       signout
     </v-btn>
     <div v-if="currentUser != null">
-      <v-textarea
-        label="body"
-        v-model="cuttingNote"
-      ></v-textarea>
-      <v-btn class="mr-4" @click="createCutting">
-        stick
+      <div v-show="isNewMode">
+        <CuttingForm :initialCutting="newCutting" @submit="createCutting" @setEditMode="setNewMode"/>
+      </div>
+      <v-btn v-show="!isNewMode" @click="isNewMode = true">
+        New
       </v-btn>
-      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :note="cutting.Note" :id="cutting.ID" @delete="deleteCutting"></Cutting>
+      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :cutting="cutting" @deleteCutting="deleteCutting" @updateCutting="updateCutting" />
       <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       <div class="d-flex justify-center">
         <v-btn v-show="loadButtonVisible" @click="loadCuttings">
@@ -33,10 +32,14 @@ export default {
   data () {
     return {
       cuttings: [],
-      cuttingNote: '',
+      newCutting: {
+        ID: null,
+        Note: ''
+      },
       page: 1,
       pageSize: 2,
-      loadButtonVisible: true
+      loadButtonVisible: true,
+      isNewMode: false
     }
   },
   computed: {
@@ -50,29 +53,72 @@ export default {
       await self.$fire.auth.signOut()
       location.reload()
     },
-    async createCutting () {
+    async createCutting (cutting) {
       const self = this
+      if (cutting.Note === '') {
+        self.isNewMode = false
+        return
+      }
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
         .$post('/cuttings', {
-          note: self.cuttingNote
+          note: cutting.Note
         }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(function (response) {
-          self.cuttingNote = ''
+          cutting.Note = ''
           self.cuttings.unshift(response)
+          self.isNewMode = false
         })
         .catch(function (error) {
           console.log(error)
         })
     },
-    deleteCutting (id) {
-      const index = this.cuttings.findIndex(cutting => cutting.ID === id)
-      this.cuttings.splice(index, 1)
-      this.page = Math.ceil(this.cuttings.length / this.pageSize)
+    async updateCutting (cutting) {
+      const self = this
+      console.log(cutting)
+      if (cutting.Note === '') { return }
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$put(`/cuttings/${cutting.ID}`, {
+          note: cutting.Note
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          const cutting = self.cuttings.find(cutting => cutting.ID === response.ID)
+          cutting.Note = response.Note
+          self.isEditMode = false
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    async deleteCutting (id) {
+      if (!confirm('Delete this?')) { return }
+      const self = this
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$delete(`/cuttings/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          const index = this.cuttings.findIndex(cutting => cutting.ID === id)
+          this.cuttings.splice(index, 1)
+          this.page = Math.ceil(this.cuttings.length / this.pageSize)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     async infiniteHandler ($state) {
       const self = this
@@ -132,6 +178,10 @@ export default {
       return newCuttings.filter((newCutting) => {
         return !cuttingIds.includes(newCutting.ID)
       })
+    },
+    setNewMode (newMode) {
+      console.log(newMode)
+      this.isNewMode = newMode
     }
   }
 }
