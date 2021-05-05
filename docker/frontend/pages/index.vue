@@ -5,13 +5,10 @@
       signout
     </v-btn>
     <div v-if="currentUser != null">
-      <div v-show="isNewMode">
-        <CuttingForm :initialCutting="newCutting" @submit="createCutting" @setEditMode="setNewMode"/>
-      </div>
-      <v-btn v-show="!isNewMode" @click="isNewMode = true">
-        New
-      </v-btn>
-      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :cutting="cutting" @deleteCutting="deleteCutting" @updateCutting="updateCutting" />
+      <v-card class="mx-auto my-4" max-width="374">
+        <CuttingForm :initialCutting="newCutting" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createCutting" @setEditMode="setNewMode"/>
+      </v-card>
+      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :cutting="cutting" @replaceCutting="replaceCutting" @removeCutting="removeCutting" />
       <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       <div class="d-flex justify-center">
         <v-btn v-show="loadButtonVisible" @click="loadCuttings">
@@ -39,7 +36,8 @@ export default {
       page: 1,
       pageSize: 2,
       loadButtonVisible: true,
-      isNewMode: false
+      isNewMode: false,
+      isWaitingResponse: false
     }
   },
   computed: {
@@ -55,10 +53,9 @@ export default {
     },
     async createCutting (cutting) {
       const self = this
-      if (cutting.Note === '') {
-        self.isNewMode = false
-        return
-      }
+      self.isNewMode = false
+      if (cutting.Note === '') { return }
+      self.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
         .$post('/cuttings', {
@@ -71,53 +68,11 @@ export default {
         .then(function (response) {
           cutting.Note = ''
           self.cuttings.unshift(response)
-          self.isNewMode = false
+          self.isWaitingResponse = false
         })
         .catch(function (error) {
           console.log(error)
-        })
-    },
-    async updateCutting (cutting) {
-      const self = this
-      console.log(cutting)
-      if (cutting.Note === '') { return }
-      const token = await self.$fire.auth.currentUser?.getIdToken(true)
-      await self.$axios
-        .$put(`/cuttings/${cutting.ID}`, {
-          note: cutting.Note
-        }, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then(function (response) {
-          console.log(response)
-          const cutting = self.cuttings.find(cutting => cutting.ID === response.ID)
-          cutting.Note = response.Note
-          self.isEditMode = false
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    async deleteCutting (id) {
-      if (!confirm('Delete this?')) { return }
-      const self = this
-      const token = await self.$fire.auth.currentUser?.getIdToken(true)
-      await self.$axios
-        .$delete(`/cuttings/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then(function (response) {
-          console.log(response)
-          const index = this.cuttings.findIndex(cutting => cutting.ID === id)
-          this.cuttings.splice(index, 1)
-          this.page = Math.ceil(this.cuttings.length / this.pageSize)
-        })
-        .catch(function (error) {
-          console.log(error)
+          self.isWaitingReponse = false
         })
     },
     async infiniteHandler ($state) {
@@ -180,8 +135,16 @@ export default {
       })
     },
     setNewMode (newMode) {
-      console.log(newMode)
       this.isNewMode = newMode
+    },
+    replaceCutting (response) {
+      const cutting = this.cuttings.find(cutting => cutting.ID === response.ID)
+      cutting.Note = response.Note
+    },
+    removeCutting (id) {
+      const index = this.cuttings.findIndex(cutting => cutting.ID === id)
+      this.cuttings.splice(index, 1)
+      this.page = Math.ceil(this.cuttings.length / this.pageSize)
     }
   }
 }

@@ -1,27 +1,15 @@
 <template>
   <v-card class="mx-auto my-4" max-width="374">
-    <div v-show="!isEditMode">
-      <v-card-text>
-        <div @click="isEditMode = true">
-          {{ cutting.Note }}
-        </div>
-      </v-card-text>
-
-      <v-divider class="mx-4"></v-divider>
-      <v-card-actions>
-        <v-btn
-          text
-          @click="$emit('deleteCutting', cutting.ID)"
-        >
-          Delete
-        </v-btn>
-      </v-card-actions>
-    </div>
-    <div v-show="isEditMode">
-      <v-card-text>
-        <CuttingForm :initialCutting="cutting" @submit="updateCutting" @setEditMode="setEditMode"/>
-      </v-card-text>
-    </div>
+    <CuttingForm :initialCutting="cutting" :isWaitingResponse="isWaitingResponse" :isEditMode="isEditMode" @submit="updateCutting" @setEditMode="setEditMode"/>
+    <v-divider class="mx-4"></v-divider>
+    <v-card-actions>
+      <v-btn
+        text
+        @click="deleteCutting(cutting.ID)"
+      >
+        Delete
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -32,15 +20,54 @@ export default {
   },
   data () {
     return {
-      isEditMode: false
+      isEditMode: false,
+      isWaitingResponse: false
     }
   },
   methods: {
     setEditMode (editMode) {
       this.isEditMode = editMode
     },
-    updateCutting (cutting) {
-      this.$emit('updateCutting', cutting)
+    async updateCutting (cutting) {
+      const self = this
+      self.editMode = false
+      if (cutting.Note === '') { return }
+      this.isWaitingResponse = true
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$put(`/cuttings/${cutting.ID}`, {
+          note: cutting.Note
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          self.$emit('replaceCutting', response)
+          self.isWaitingResponse = false
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    async deleteCutting (id) {
+      if (!confirm('Delete this?')) { return }
+      const self = this
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$delete(`/cuttings/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          self.$emit('removeCutting', id)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }
