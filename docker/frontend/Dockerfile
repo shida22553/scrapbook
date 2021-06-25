@@ -1,4 +1,4 @@
-FROM node:14.4.0
+FROM node:16-alpine3.11
 RUN mkdir /myapp
 WORKDIR /myapp
 RUN yarn add nuxt
