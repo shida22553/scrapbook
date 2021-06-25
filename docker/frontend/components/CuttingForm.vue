@@ -11,8 +11,21 @@
     <v-progress-circular
       indeterminate
       v-show="isWaitingResponse" />
-    <div v-show="!isEditMode && !isWaitingResponse" @click="clickNote">
-      {{ cutting.Note || 'Stick new cutting' }}
+    <div v-show="!isEditMode && !isWaitingResponse">
+      <div @click="clickNote">
+        {{ cutting.Note || 'Stick new cutting' }}
+      </div>
+      <v-chip-group
+        column
+      >
+        <v-chip
+          small
+          v-for="tag in tags"
+          :key="tag.ID"
+        >
+          {{ tag.Name }}
+        </v-chip>
+      </v-chip-group>
     </div>
   </v-card-text>
 </template>
@@ -21,6 +34,7 @@
 export default {
   props: {
     initialCutting: Object,
+    initialTags: Array,
     isWaitingResponse: Boolean,
     isEditMode: Boolean
   },
@@ -29,7 +43,8 @@ export default {
       cutting: {
         ID: this.initialCutting.ID,
         Note: this.initialCutting.Note
-      }
+      },
+      tags: this.initialTags
     }
   },
   methods: {

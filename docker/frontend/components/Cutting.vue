@@ -1,7 +1,12 @@
 <template>
   <v-card class="mx-auto my-4" max-width="374">
-    <CuttingForm :initialCutting="cutting" :isWaitingResponse="isWaitingResponse" :isEditMode="isEditMode" @submit="updateCutting" @setEditMode="setEditMode"/>
-    <v-divider class="mx-4"></v-divider>
+    <CuttingForm
+    :initialCutting="cutting"
+    :initialTags="tags"
+    :isWaitingResponse="isWaitingResponse"
+    :isEditMode="isEditMode"
+    @submit="updateCutting"
+    @setEditMode="setEditMode"/>
     <v-card-actions>
       <v-btn
         text
@@ -16,7 +21,8 @@
 <script>
 export default {
   props: {
-    cutting: Object
+    cutting: Object,
+    tags: Array
   },
   data () {
     return {

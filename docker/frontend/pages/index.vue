@@ -8,7 +8,13 @@
       <v-card class="mx-auto my-4" max-width="374">
         <CuttingForm :initialCutting="newCutting" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createCutting" @setEditMode="setNewMode"/>
       </v-card>
-      <Cutting v-for="cutting in cuttings" :key="cutting.ID" :cutting="cutting" @replaceCutting="replaceCutting" @removeCutting="removeCutting" />
+      <Cutting
+      v-for="cutting in cuttings"
+      :key="cutting.ID"
+      :cutting="cutting"
+      :tags="tags"
+      @replaceCutting="replaceCutting"
+      @removeCutting="removeCutting" />
       <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       <div class="d-flex justify-center">
         <v-btn v-show="loadButtonVisible" @click="loadCuttings">
@@ -37,7 +43,16 @@ export default {
       pageSize: 2,
       loadButtonVisible: true,
       isNewMode: false,
-      isWaitingResponse: false
+      isWaitingResponse: false,
+      tags: [
+        {
+          ID: 1,
+          Name: 'aaa'
+        }, {
+          ID: 2,
+          Name: 'bbb'
+        }
+      ]
     }
   },
   computed: {
