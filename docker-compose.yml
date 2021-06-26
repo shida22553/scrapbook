@@ -18,7 +18,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./api:/myapp
+      - ./docker/api:/myapp
     ports:
       - "8080:8080"
     command: ./wait-for.sh db:3306 -- air
