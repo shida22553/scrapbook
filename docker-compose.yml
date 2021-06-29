@@ -18,10 +18,10 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./docker/api:/myapp
+      - ./docker/api:/usr/local/go/src/myapp
     ports:
       - "8080:8080"
-    command: ./wait-for.sh db:3306 -- air
+    command: ./wait-for.sh db:3306 -- air -c .air.toml
     depends_on:
       - "db"
   db:

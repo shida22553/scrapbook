@@ -1,12 +1,15 @@
 FROM golang:alpine3.13
 
-RUN mkdir /myapp
-WORKDIR /myapp
+RUN apk update
+RUN apk add curl
+RUN apk add build-base
 
+RUN mkdir /usr/local/go/src/myapp
+WORKDIR /usr/local/go/src/myapp
 RUN go mod init shida22552/my-scrapbook
+RUN go get -u github.com/cosmtrek/air
 RUN go get github.com/gin-gonic/gin
 RUN go get github.com/go-sql-driver/mysql
 RUN go get github.com/jinzhu/gorm
-RUN go get github.com/cosmtrek/air
 
-COPY . /myapp
+COPY . /usr/local/go/src/myapp
