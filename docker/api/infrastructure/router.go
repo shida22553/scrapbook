@@ -26,10 +26,15 @@ func init() {
 	router.Use(authMiddleware())
 
 	userController := controllers.NewUserController(NewSqlHandler())
+	cuttingController := controllers.NewCuttingController(NewSqlHandler())
 
 	router.POST("/users", func(c *gin.Context) { userController.Create(c) })
 	router.GET("/users", func(c *gin.Context) { userController.Index(c) })
 	router.GET("/users/:id", func(c *gin.Context) { userController.Show(c) })
+	router.POST("/cuttings", func(c *gin.Context) { cuttingController.Create(c) })
+	router.PUT("/cuttings", func(c *gin.Context) { cuttingController.Create(c) })
+	router.GET("/cuttings", func(c *gin.Context) { cuttingController.Index(c) })
+	router.GET("/cuttings/:id", func(c *gin.Context) { cuttingController.Show(c) })
 
 	Router = router
 }

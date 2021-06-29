@@ -5,4 +5,7 @@ type Context interface {
 	Bind(interface{}) error
 	Status(int)
 	JSON(int, interface{})
+	MustGet(key string) interface{}
+	BindJSON(obj interface{}) error
+	DefaultQuery(key, defaultValue string) string
 }

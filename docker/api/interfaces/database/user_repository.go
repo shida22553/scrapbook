@@ -6,7 +6,7 @@ type UserRepository struct {
 	SqlHandler
 }
 
-func (repo *UserRepository) Store(user domain.User) (id uint, err error) {
+func (repo *UserRepository) Create(user domain.User) (id uint, err error) {
 	if err = repo.Select("Uid", "Name").Create(&user).Error; err != nil {
 		return
 	}

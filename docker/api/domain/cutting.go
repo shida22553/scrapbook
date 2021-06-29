@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Cutting struct {
@@ -9,14 +9,4 @@ type Cutting struct {
 	Note   string `gorm:"text"`
 	UserID uint
 	User   User
-}
-
-type CuttingPutRequest struct {
-	Note string `json:"note"`
-}
-
-type CuttingsGetRequest struct {
-	UserID   uint
-	Page     int
-	PageSize int
 }

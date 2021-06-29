@@ -60,3 +60,11 @@ func (handler *SqlHandler) Select(query interface{}, args ...interface{}) *gorm.
 func (handler *SqlHandler) Order(arg interface{}) *gorm.DB {
 	return handler.Conn.Order(arg)
 }
+
+func (handler *SqlHandler) Offset(arg int) *gorm.DB {
+	return handler.Conn.Offset(arg)
+}
+
+func (handler *SqlHandler) Limit(arg int) *gorm.DB {
+	return handler.Conn.Limit(arg)
+}

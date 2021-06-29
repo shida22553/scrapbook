@@ -8,20 +8,20 @@
       <v-card class="mx-auto my-4" max-width="374">
         <CuttingForm :initialCutting="newCutting" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createCutting" @setEditMode="setNewMode"/>
       </v-card>
-      <!-- <Cutting
+      <Cutting
       v-for="cutting in cuttings"
       :key="cutting.ID"
       :cutting="cutting"
       :tags="tags"
       @replaceCutting="replaceCutting"
       @removeCutting="removeCutting" />
-      <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
-      <!-- <div class="d-flex justify-center">
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+      <div class="d-flex justify-center">
         <v-btn v-show="loadButtonVisible" @click="loadCuttings">
           load
         </v-btn>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
         Note: ''
       },
       page: 1,
-      pageSize: 2,
+      pageSize: 10,
       loadButtonVisible: true,
       isNewMode: false,
       isWaitingResponse: false,
@@ -106,7 +106,6 @@ export default {
       }
     },
     async getCuttings () {
-      console.log(this.page)
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       let newCuttings = null
@@ -121,7 +120,6 @@ export default {
           }
         })
         .then(function (response) {
-          console.log(response)
           newCuttings = response
         })
         .catch(function (error) {
