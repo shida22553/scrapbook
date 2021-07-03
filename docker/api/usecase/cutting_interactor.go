@@ -1,18 +1,27 @@
 package usecase
 
-import "myapp/domain"
+import (
+	"myapp/domain"
+)
 
 type CuttingInteractor struct {
 	CuttingRepository CuttingRepository
 }
 
-func (interactor *CuttingInteractor) Add(cutting domain.Cutting) (id uint, err error) {
-	id, err = interactor.CuttingRepository.Create(cutting)
+func (interactor *CuttingInteractor) Add(cutting domain.Cutting) (result domain.Cutting, err error) {
+	err = interactor.CuttingRepository.Create(cutting)
+	result = cutting
 	return
 }
 
-func (interactor *CuttingInteractor) Update(cutting domain.Cutting) (id uint, err error) {
-	id, err = interactor.CuttingRepository.Update(cutting)
+func (interactor *CuttingInteractor) Remove(cutting domain.Cutting) (err error) {
+	err = interactor.CuttingRepository.Delete(cutting)
+	return
+}
+
+func (interactor *CuttingInteractor) Update(cutting domain.Cutting) (result domain.Cutting, err error) {
+	err = interactor.CuttingRepository.Update(cutting)
+	result = cutting
 	return
 }
 
@@ -21,7 +30,7 @@ func (interactor *CuttingInteractor) Cuttings(user domain.User, page int, pageSi
 	return
 }
 
-func (interactor *CuttingInteractor) CuttingById(user domain.User, id int) (cutting domain.Cutting, err error) {
+func (interactor *CuttingInteractor) CuttingById(user domain.User, id uint) (cutting domain.Cutting, err error) {
 	cutting, err = interactor.CuttingRepository.FindById(user, id)
 	return
 }

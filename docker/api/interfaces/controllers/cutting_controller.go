@@ -42,12 +42,12 @@ func (controller *CuttingController) Create(c Context) {
 	var cutting domain.Cutting
 	c.BindJSON(&cutting)
 	cutting.UserID = user.ID
-	id, err := controller.CuttingInteractor.Add(cutting)
+	result, err := controller.CuttingInteractor.Add(cutting)
 	if err != nil {
 		c.JSON(500, nil)
 		return
 	}
-	c.JSON(201, id)
+	c.JSON(201, result)
 }
 
 func (controller *CuttingController) Update(c Context) {
@@ -58,17 +58,18 @@ func (controller *CuttingController) Update(c Context) {
 		return
 	}
 
-	id, _ := strconv.Atoi(c.Param("id"))
-	cutting, _ := controller.CuttingInteractor.CuttingById(user, id)
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	uintId := uint(id)
+	cutting, _ := controller.CuttingInteractor.CuttingById(user, uintId)
 	requestBody := CuttingPutRequest{}
 	c.BindJSON(&requestBody)
 	cutting.Note = requestBody.Note
-	cuttingId, cuttingErr := controller.CuttingInteractor.Update(cutting)
+	result, cuttingErr := controller.CuttingInteractor.Update(cutting)
 	if cuttingErr != nil {
 		c.JSON(500, nil)
 		return
 	}
-	c.JSON(201, cuttingId)
+	c.JSON(201, result)
 }
 
 func (controller *CuttingController) Index(c Context) {
@@ -96,11 +97,31 @@ func (controller *CuttingController) Show(c Context) {
 		return
 	}
 
-	id, _ := strconv.Atoi(c.Param("id"))
-	cutting, err := controller.CuttingInteractor.CuttingById(user, id)
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	uintId := uint(id)
+	cutting, err := controller.CuttingInteractor.CuttingById(user, uintId)
 	if err != nil {
 		c.JSON(500, nil)
 		return
 	}
 	c.JSON(200, cutting)
+}
+
+func (controller *CuttingController) Delete(c Context) {
+	uid := c.MustGet("uid").(string)
+	user, err := controller.UserInteractor.UserByUid(uid)
+	if err != nil {
+		c.JSON(500, nil)
+		return
+	}
+
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	uintId := uint(id)
+	cutting, _ := controller.CuttingInteractor.CuttingById(user, uintId)
+	cuttingErr := controller.CuttingInteractor.Remove(cutting)
+	if cuttingErr != nil {
+		c.JSON(500, nil)
+		return
+	}
+	c.JSON(204, nil)
 }
