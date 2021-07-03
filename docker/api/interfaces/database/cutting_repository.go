@@ -1,7 +1,7 @@
 package database
 
 import (
-	// "log"
+	"fmt"
 	"myapp/domain"
 )
 
@@ -9,22 +9,24 @@ type CuttingRepository struct {
 	SqlHandler
 }
 
-func (repo *CuttingRepository) Create(cutting domain.Cutting) (err error) {
-	if err = repo.Select("Note", "UserID").Create(&cutting).Error; err != nil {
+func (repo *CuttingRepository) Create(cutting *domain.Cutting) (err error) {
+	fmt.Println("create-----")
+	if err = repo.Select("Note", "UserID").Create(cutting).Error; err != nil {
 		return
 	}
 	return
 }
 
-func (repo *CuttingRepository) Update(cutting domain.Cutting) (err error) {
-	if err = repo.Save(&cutting).Error; err != nil {
+func (repo *CuttingRepository) Update(cutting *domain.Cutting) (err error) {
+	fmt.Println("udpdate-----")
+	if err = repo.Save(cutting).Error; err != nil {
 		return
 	}
 	return
 }
 
-func (repo *CuttingRepository) Delete(cutting domain.Cutting) (err error) {
-	if err = repo.Where("id = ?", cutting.ID).Delete(&cutting).Error; err != nil {
+func (repo *CuttingRepository) Delete(cutting *domain.Cutting) (err error) {
+	if err = repo.Where("id = ?", cutting.ID).Delete(cutting).Error; err != nil {
 		return
 	}
 	return

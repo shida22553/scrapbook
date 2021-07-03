@@ -1,6 +1,7 @@
 <template>
   <v-card-text>
     <v-form v-show="isEditMode">
+      <span>ID: {{ cutting.ID }}</span>
       <v-textarea
         label="note"
         v-model="cutting.Note"
@@ -12,6 +13,7 @@
       indeterminate
       v-show="isWaitingResponse" />
     <div v-show="!isEditMode && !isWaitingResponse">
+      <span>ID: {{ cutting.ID }}</span>
       <div @click="clickNote">
         {{ cutting.Note || 'Stick new cutting' }}
       </div>

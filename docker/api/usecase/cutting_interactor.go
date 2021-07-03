@@ -8,20 +8,18 @@ type CuttingInteractor struct {
 	CuttingRepository CuttingRepository
 }
 
-func (interactor *CuttingInteractor) Add(cutting domain.Cutting) (result domain.Cutting, err error) {
+func (interactor *CuttingInteractor) Add(cutting *domain.Cutting) (err error) {
 	err = interactor.CuttingRepository.Create(cutting)
-	result = cutting
 	return
 }
 
-func (interactor *CuttingInteractor) Remove(cutting domain.Cutting) (err error) {
+func (interactor *CuttingInteractor) Remove(cutting *domain.Cutting) (err error) {
 	err = interactor.CuttingRepository.Delete(cutting)
 	return
 }
 
-func (interactor *CuttingInteractor) Update(cutting domain.Cutting) (result domain.Cutting, err error) {
+func (interactor *CuttingInteractor) Update(cutting *domain.Cutting) (err error) {
 	err = interactor.CuttingRepository.Update(cutting)
-	result = cutting
 	return
 }
 

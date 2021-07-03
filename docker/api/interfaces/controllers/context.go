@@ -8,4 +8,5 @@ type Context interface {
 	MustGet(key string) interface{}
 	BindJSON(obj interface{}) error
 	DefaultQuery(key, defaultValue string) string
+	Abort()
 }

@@ -32,7 +32,7 @@ func init() {
 	router.GET("/users", func(c *gin.Context) { userController.Index(c) })
 	router.GET("/users/:id", func(c *gin.Context) { userController.Show(c) })
 	router.POST("/cuttings", func(c *gin.Context) { cuttingController.Create(c) })
-	router.PUT("/cuttings/:id", func(c *gin.Context) { cuttingController.Create(c) })
+	router.PUT("/cuttings/:id", func(c *gin.Context) { cuttingController.Update(c) })
 	router.GET("/cuttings", func(c *gin.Context) { cuttingController.Index(c) })
 	router.GET("/cuttings/:id", func(c *gin.Context) { cuttingController.Show(c) })
 	router.DELETE("/cuttings/:id", func(c *gin.Context) { cuttingController.Delete(c) })
