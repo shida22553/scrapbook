@@ -36,6 +36,7 @@ func init() {
 	router.PUT("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Update(c) })
 	router.GET("/loose_leafs", func(c *gin.Context) { looseLeafController.Index(c) })
 	router.GET("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Show(c) })
+	router.PUT("/loose_leafs/:id/binder", func(c *gin.Context) { looseLeafController.UpdateBinderID(c) })
 	router.DELETE("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Delete(c) })
 	router.POST("/binders", func(c *gin.Context) { binderController.Create(c) })
 	router.PUT("/binders/:id", func(c *gin.Context) { binderController.Update(c) })

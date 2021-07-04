@@ -151,6 +151,7 @@ export default {
     replaceLooseLeaf (response) {
       const looseLeaf = this.looseLeafs.find(looseLeaf => looseLeaf.ID === response.ID)
       looseLeaf.Content = response.Content
+      looseLeaf.BinderID = response.BinderID
     },
     removeLooseLeaf (id) {
       const index = this.looseLeafs.findIndex(looseLeaf => looseLeaf.ID === id)

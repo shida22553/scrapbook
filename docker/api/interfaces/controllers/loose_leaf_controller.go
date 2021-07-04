@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	// "fmt"
 	"myapp/domain"
 	"myapp/interfaces/database"
 	"myapp/usecase"
@@ -15,6 +16,10 @@ type LooseLeafController struct {
 
 type LooseLeafPutRequest struct {
 	Content string `json:"content"`
+}
+
+type LooseLeafBinderIdPutRequest struct {
+	BinderID uint `json:"binderId"`
 }
 
 func NewLooseLeafController(sqlHandler database.SqlHandler) *LooseLeafController {
@@ -103,4 +108,21 @@ func (controller *LooseLeafController) Delete(c Context) {
 		return
 	}
 	c.JSON(204, nil)
+}
+
+func (controller *LooseLeafController) UpdateBinderID(c Context) {
+	user := controller.findUser(c)
+
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	uintId := uint(id)
+	looseLeaf, _ := controller.LooseLeafInteractor.LooseLeafById(user, uintId)
+	requestBody := LooseLeafBinderIdPutRequest{}
+	c.BindJSON(&requestBody)
+	looseLeaf.BinderID = requestBody.BinderID
+	looseLeafErr := controller.LooseLeafInteractor.Update(&looseLeaf)
+	if looseLeafErr != nil {
+		c.JSON(500, nil)
+		return
+	}
+	c.JSON(201, looseLeaf)
 }

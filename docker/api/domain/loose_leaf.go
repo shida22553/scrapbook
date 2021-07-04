@@ -6,9 +6,9 @@ import (
 
 type LooseLeaf struct {
 	gorm.Model
-	Content string `gorm:"text"`
-	UserID  uint
-	// BinderID uint
-	User User
-	// Binder   Binder
+	Content  string `gorm:"text"`
+	UserID   uint
+	BinderID uint
+	User     User
+	Binder   Binder
 }
