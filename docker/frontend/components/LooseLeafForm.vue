@@ -13,18 +13,11 @@
       v-show="isWaitingResponse" />
     <div v-show="!isEditMode && !isWaitingResponse">
       <div @click="clickContent">
-        {{ looseLeaf.Content || 'Bind new loose leaf' }}
+        {{ looseLeaf.Content || 'Add new loose leaf' }}
       </div>
       <v-chip-group
         column
       >
-        <v-chip
-          small
-          v-for="tag in tags"
-          :key="tag.ID"
-        >
-          {{ tag.Name }}
-        </v-chip>
       </v-chip-group>
     </div>
   </v-card-text>
@@ -34,7 +27,6 @@
 export default {
   props: {
     initialLooseLeaf: Object,
-    initialTags: Array,
     isWaitingResponse: Boolean,
     isEditMode: Boolean
   },
@@ -43,8 +35,7 @@ export default {
       looseLeaf: {
         ID: this.initialLooseLeaf.ID,
         Content: this.initialLooseLeaf.Content
-      },
-      tags: this.initialTags
+      }
     }
   },
   methods: {

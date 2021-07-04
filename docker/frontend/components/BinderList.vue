@@ -1,17 +1,17 @@
 <template>
   <div>
     <v-card class="mx-auto my-4" max-width="374">
-      <LooseLeafForm :initialLooseLeaf="newLooseLeaf" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createLooseLeaf" @setEditMode="setNewMode"/>
+      <BinderForm :initialBinder="newBinder" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createBinder" @setEditMode="setNewMode"/>
     </v-card>
-    <LooseLeaf
-    v-for="looseLeaf in looseLeafs"
-    :key="looseLeaf.ID"
-    :looseLeaf="looseLeaf"
-    @replaceLooseLeaf="replaceLooseLeaf"
-    @removeLooseLeaf="removeLooseLeaf" />
+    <Binder
+    v-for="binder in binders"
+    :key="binder.ID"
+    :binder="binder"
+    @replaceBinder="replaceBinder"
+    @removeBinder="removeBinder" />
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     <div class="d-flex justify-center">
-      <v-btn v-show="loadButtonVisible" @click="loadLooseLeafs">
+      <v-btn v-show="loadButtonVisible" @click="loadBinders">
         load
       </v-btn>
     </div>
@@ -30,10 +30,10 @@ export default {
   },
   data () {
     return {
-      looseLeafs: [],
-      newLooseLeaf: {
+      binders: [],
+      newBinder: {
         ID: null,
-        Content: ''
+        Name: ''
       },
       page: 1,
       pageSize: 10,
@@ -43,23 +43,23 @@ export default {
     }
   },
   methods: {
-    async createLooseLeaf (looseLeaf) {
+    async createBinder (binder) {
       const self = this
       self.isNewMode = false
-      if (looseLeaf.Content === '') { return }
+      if (binder.Name === '') { return }
       self.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
-        .$post('/loose_leafs', {
-          content: looseLeaf.Content
+        .$post('/binders', {
+          name: binder.Name
         }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(function (response) {
-          looseLeaf.Content = ''
-          self.looseLeafs.unshift(response)
+          binder.Name = ''
+          self.binders.unshift(response)
           self.isWaitingResponse = false
         })
         .catch(function (error) {
@@ -69,12 +69,12 @@ export default {
     },
     async infiniteHandler ($state) {
       const self = this
-      let newLooseLeafs = await self.getLooseLeafs()
-      if (newLooseLeafs) {
-        if (newLooseLeafs.length > 0) {
-          newLooseLeafs = self.removeOverlappedLooseLeafs(newLooseLeafs)
+      let newBinders = await self.getBinders()
+      if (newBinders) {
+        if (newBinders.length > 0) {
+          newBinders = self.removeOverlappedBinders(newBinders)
           self.page += 1
-          self.looseLeafs.push(...newLooseLeafs)
+          self.binders.push(...newBinders)
           $state.loaded()
         } else {
           self.loadButtonVisible = false
@@ -82,12 +82,12 @@ export default {
         }
       }
     },
-    async getLooseLeafs () {
+    async getBinders () {
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
-      let newLooseLeafs = null
+      let newBinders = null
       await self.$axios
-        .$get('/loose_leafs', {
+        .$get('/binders', {
           headers: {
             Authorization: `Bearer ${token}`
           },
@@ -97,44 +97,44 @@ export default {
           }
         })
         .then(function (response) {
-          newLooseLeafs = response
+          newBinders = response
         })
         .catch(function (error) {
           console.log(error)
         })
-      return newLooseLeafs
+      return newBinders
     },
-    async loadLooseLeafs () {
+    async loadBinders () {
       const self = this
-      let newLooseLeafs = await self.getLooseLeafs()
-      if (newLooseLeafs) {
-        if (newLooseLeafs.length > 0) {
-          newLooseLeafs = self.removeOverlappedLooseLeafs(newLooseLeafs)
+      let newBinders = await self.getBinders()
+      if (newBinders) {
+        if (newBinders.length > 0) {
+          newBinders = self.removeOverlappedBinders(newBinders)
           self.page += 1
-          self.looseLeafs.push(...newLooseLeafs)
+          self.binders.push(...newBinders)
         } else {
           self.loadButtonVisible = false
         }
       }
     },
-    removeOverlappedLooseLeafs (newLooseLeafs) {
+    removeOverlappedBinders (newBinders) {
       const self = this
-      const looseLeafIds = self.looseLeafs.map(looseLeaf => looseLeaf.ID)
-      return newLooseLeafs.filter((newLooseLeaf) => {
-        return !looseLeafIds.includes(newLooseLeaf.ID)
+      const binderIds = self.binders.map(binder => binder.ID)
+      return newBinders.filter((newBinder) => {
+        return !binderIds.includes(newBinder.ID)
       })
     },
     setNewMode (newMode) {
       this.isNewMode = newMode
     },
-    replaceLooseLeaf (response) {
-      const looseLeaf = this.looseLeafs.find(looseLeaf => looseLeaf.ID === response.ID)
-      looseLeaf.Content = response.Content
+    replaceBinder (response) {
+      const binder = this.binders.find(binder => binder.ID === response.ID)
+      binder.Name = response.Name
     },
-    removeLooseLeaf (id) {
-      const index = this.looseLeafs.findIndex(looseLeaf => looseLeaf.ID === id)
-      this.looseLeafs.splice(index, 1)
-      this.page = Math.ceil(this.looseLeafs.length / this.pageSize)
+    removeBinder (id) {
+      const index = this.binders.findIndex(binder => binder.ID === id)
+      this.binders.splice(index, 1)
+      this.page = Math.ceil(this.binders.length / this.pageSize)
     }
   }
 }

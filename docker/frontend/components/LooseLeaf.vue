@@ -2,12 +2,11 @@
   <v-card class="mx-auto my-4" max-width="374">
     <LooseLeafForm
     :initialLooseLeaf="looseLeaf"
-    :initialTags="tags"
     :isWaitingResponse="isWaitingResponse"
     :isEditMode="isEditMode"
     @submit="updateLooseLeaf"
     @setEditMode="setEditMode"/>
-    <v-card-actions>
+    <!-- <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
         x-small
@@ -15,15 +14,14 @@
       >
         Remove
       </v-btn>
-    </v-card-actions>
+    </v-card-actions> -->
   </v-card>
 </template>
 
 <script>
 export default {
   props: {
-    looseLeaf: Object,
-    tags: Array
+    looseLeaf: Object
   },
   data () {
     return {
