@@ -26,11 +26,11 @@
       <v-progress-circular
       indeterminate
       v-show="isWaitingPutBinderResponse" />
-      <v-chip-group columnv-show="!isWaitingPutBinderResponse">
+      <v-chip-group column v-show="!isWaitingPutBinderResponse">
         <v-chip
         v-for="(binder, index) in binders"
         :key="binder.id"
-        :color="getBinderColor(index, '')"
+        :color="getBinderColor(index, 'darken-3')"
         :outlined="binder.ID != looseLeaf.BinderID"
         @click="bind(looseLeaf, binder.ID)"
         x-small>

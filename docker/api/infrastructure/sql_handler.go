@@ -73,3 +73,7 @@ func (handler *SqlHandler) Offset(arg int) *gorm.DB {
 func (handler *SqlHandler) Limit(arg int) *gorm.DB {
 	return handler.Conn.Limit(arg)
 }
+
+func (handler *SqlHandler) Model(value interface{}) *gorm.DB {
+	return handler.Conn.Model(value)
+}

@@ -118,8 +118,8 @@ func (controller *LooseLeafController) UpdateBinderID(c Context) {
 	looseLeaf, _ := controller.LooseLeafInteractor.LooseLeafById(user, uintId)
 	requestBody := LooseLeafBinderIdPutRequest{}
 	c.BindJSON(&requestBody)
-	looseLeaf.BinderID = requestBody.BinderID
-	looseLeafErr := controller.LooseLeafInteractor.Update(&looseLeaf)
+	looseLeaf.BinderID = &requestBody.BinderID
+	looseLeafErr := controller.LooseLeafInteractor.UpdateBinderID(looseLeaf)
 	if looseLeafErr != nil {
 		c.JSON(500, nil)
 		return

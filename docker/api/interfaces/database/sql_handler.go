@@ -13,4 +13,5 @@ type SqlHandler interface {
 	Offset(arg int) *gorm.DB
 	Limit(arg int) *gorm.DB
 	Delete(value interface{}) *gorm.DB
+	Model(value interface{}) *gorm.DB
 }
