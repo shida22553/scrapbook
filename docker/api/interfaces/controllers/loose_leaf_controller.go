@@ -14,7 +14,7 @@ type LooseLeafController struct {
 }
 
 type LooseLeafPutRequest struct {
-	Content string `json:"note"`
+	Content string `json:"content"`
 }
 
 func NewLooseLeafController(sqlHandler database.SqlHandler) *LooseLeafController {

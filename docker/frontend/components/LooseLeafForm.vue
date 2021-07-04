@@ -1,11 +1,10 @@
 <template>
   <v-card-text>
     <v-form v-show="isEditMode">
-      <span>ID: {{ cutting.ID }}</span>
       <v-textarea
-        label="note"
-        v-model="cutting.Note"
-        ref="noteTextArea"
+        label="content"
+        v-model="looseLeaf.Content"
+        ref="contentTextArea"
         @blur="submit"
       ></v-textarea>
     </v-form>
@@ -13,9 +12,8 @@
       indeterminate
       v-show="isWaitingResponse" />
     <div v-show="!isEditMode && !isWaitingResponse">
-      <span>ID: {{ cutting.ID }}</span>
-      <div @click="clickNote">
-        {{ cutting.Note || 'Stick new cutting' }}
+      <div @click="clickContent">
+        {{ looseLeaf.Content || 'Bind new loose leaf' }}
       </div>
       <v-chip-group
         column
@@ -35,16 +33,16 @@
 <script>
 export default {
   props: {
-    initialCutting: Object,
+    initialLooseLeaf: Object,
     initialTags: Array,
     isWaitingResponse: Boolean,
     isEditMode: Boolean
   },
   data () {
     return {
-      cutting: {
-        ID: this.initialCutting.ID,
-        Note: this.initialCutting.Note
+      looseLeaf: {
+        ID: this.initialLooseLeaf.ID,
+        Content: this.initialLooseLeaf.Content
       },
       tags: this.initialTags
     }
@@ -52,12 +50,12 @@ export default {
   methods: {
     submit () {
       this.$emit('setEditMode', false)
-      if (this.initialCutting.Note === this.cutting.Note) { return }
-      this.$emit('submit', this.cutting)
+      if (this.initialLooseLeaf.Content === this.looseLeaf.Content) { return }
+      this.$emit('submit', this.looseLeaf)
     },
-    clickNote () {
+    clickContent () {
       this.$emit('setEditMode', true)
-      this.$nextTick(() => this.$refs.noteTextArea.focus())
+      this.$nextTick(() => this.$refs.contentTextArea.focus())
     }
   }
 }

@@ -1,18 +1,19 @@
 <template>
   <v-card class="mx-auto my-4" max-width="374">
-    <CuttingForm
-    :initialCutting="cutting"
+    <LooseLeafForm
+    :initialLooseLeaf="looseLeaf"
     :initialTags="tags"
     :isWaitingResponse="isWaitingResponse"
     :isEditMode="isEditMode"
-    @submit="updateCutting"
+    @submit="updateLooseLeaf"
     @setEditMode="setEditMode"/>
     <v-card-actions>
+      <v-spacer></v-spacer>
       <v-btn
-        text
-        @click="deleteCutting(cutting.ID)"
+        x-small
+        @click="deleteLooseLeaf(looseLeaf.ID)"
       >
-        Delete
+        Remove
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -21,7 +22,7 @@
 <script>
 export default {
   props: {
-    cutting: Object,
+    looseLeaf: Object,
     tags: Array
   },
   data () {
@@ -34,15 +35,15 @@ export default {
     setEditMode (editMode) {
       this.isEditMode = editMode
     },
-    async updateCutting (cutting) {
+    async updateLooseLeaf (looseLeaf) {
       const self = this
       self.editMode = false
-      if (cutting.Note === '') { return }
+      if (looseLeaf.Content === '') { return }
       this.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
-        .$put(`/cuttings/${cutting.ID}`, {
-          note: cutting.Note
+        .$put(`/loose_leafs/${looseLeaf.ID}`, {
+          content: looseLeaf.Content
         }, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -50,26 +51,26 @@ export default {
         })
         .then(function (response) {
           console.log(response)
-          self.$emit('replaceCutting', response)
+          self.$emit('replaceLooseLeaf', response)
           self.isWaitingResponse = false
         })
         .catch(function (error) {
           console.log(error)
         })
     },
-    async deleteCutting (id) {
+    async deleteLooseLeaf (id) {
       if (!confirm('Delete this?')) { return }
       const self = this
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
       await self.$axios
-        .$delete(`/cuttings/${id}`, {
+        .$delete(`/loose_leafs/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(function (response) {
           console.log(response)
-          self.$emit('removeCutting', id)
+          self.$emit('removeLooseLeaf', id)
         })
         .catch(function (error) {
           console.log(error)
