@@ -4,9 +4,10 @@
       <BinderForm :initialBinder="newBinder" :isWaitingResponse="isWaitingResponse" :isEditMode="isNewMode" @submit="createBinder" @setEditMode="setNewMode"/>
     </v-card>
     <Binder
-    v-for="binder in binders"
+    v-for="(binder, index) in binders"
     :key="binder.ID"
     :binder="binder"
+    :color="getBinderColor(index)"
     @replaceBinder="replaceBinder"
     @removeBinder="removeBinder" />
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
@@ -135,6 +136,11 @@ export default {
       const index = this.binders.findIndex(binder => binder.ID === id)
       this.binders.splice(index, 1)
       this.page = Math.ceil(this.binders.length / this.pageSize)
+    },
+    getBinderColor (index) {
+      const colors = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange']
+      const colorIndex = Math.floor((index / this.binders.length) * colors.length)
+      return colors[colorIndex] + ' darken-4'
     }
   }
 }

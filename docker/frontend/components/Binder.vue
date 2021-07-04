@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto my-4" max-width="374">
+  <v-card class="mx-auto my-4" max-width="374" :class="color">
     <BinderForm
     :initialBinder="binder"
     :isWaitingResponse="isWaitingResponse"
@@ -12,7 +12,8 @@
 <script>
 export default {
   props: {
-    binder: Object
+    binder: Object,
+    color: String
   },
   data () {
     return {

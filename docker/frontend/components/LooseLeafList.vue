@@ -7,6 +7,7 @@
     v-for="looseLeaf in looseLeafs"
     :key="looseLeaf.ID"
     :looseLeaf="looseLeaf"
+    :binders="binders"
     @replaceLooseLeaf="replaceLooseLeaf"
     @removeLooseLeaf="removeLooseLeaf" />
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
@@ -39,8 +40,26 @@ export default {
       pageSize: 10,
       loadButtonVisible: true,
       isNewMode: false,
-      isWaitingResponse: false
+      isWaitingResponse: false,
+      binders: []
     }
+  },
+  async mounted () {
+    const self = this
+    const token = await self.$fire.auth.currentUser?.getIdToken(true)
+    await self.$axios
+      .$get('/binders', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(function (response) {
+        console.log(response)
+        self.binders.push(...response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   },
   methods: {
     async createLooseLeaf (looseLeaf) {
@@ -49,6 +68,8 @@ export default {
       if (looseLeaf.Content === '') { return }
       self.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
+
+      console.log(token)
       await self.$axios
         .$post('/loose_leafs', {
           content: looseLeaf.Content

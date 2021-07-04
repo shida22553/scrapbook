@@ -6,27 +6,43 @@
     :isEditMode="isEditMode"
     @submit="updateLooseLeaf"
     @setEditMode="setEditMode"/>
-    <!-- <v-card-actions>
+    <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
+        x-small
+        @click="isBindersVisible = !isBindersVisible"
+      >
+        Bind
+      </v-btn>
+      <!-- <v-btn
         x-small
         @click="deleteLooseLeaf(looseLeaf.ID)"
       >
         Remove
-      </v-btn>
-    </v-card-actions> -->
+      </v-btn> -->
+    </v-card-actions>
+    <v-card-actions v-show="isBindersVisible">
+      <v-spacer></v-spacer>
+      <v-chip-group column>
+        <v-chip v-for="(binder, index) in binders" :key="binder.id" :class="getBinderColor(index)" x-small>
+          {{ binder.Name }}
+        </v-chip>
+      </v-chip-group>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
   props: {
-    looseLeaf: Object
+    looseLeaf: Object,
+    binders: Array
   },
   data () {
     return {
       isEditMode: false,
-      isWaitingResponse: false
+      isWaitingResponse: false,
+      isBindersVisible: false
     }
   },
   methods: {
@@ -73,6 +89,11 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    getBinderColor (index) {
+      const colors = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange']
+      const colorIndex = Math.floor((index / this.binders.length) * colors.length)
+      return colors[colorIndex] + ' darken-4'
     }
   }
 }
