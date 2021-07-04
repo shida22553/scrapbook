@@ -21,10 +21,10 @@ func main() {
 // 	"google.golang.org/api/option"
 // )
 
-// func insertCutting(cutting *Cutting) {
+// func insertLooseLeaf(looseLeaf *LooseLeaf) {
 // 	db := getGormConnect()
 // 	// insert文
-// 	db.Create(&cutting)
+// 	db.Create(&looseLeaf)
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
@@ -33,9 +33,9 @@ func main() {
 // 	defer closeDb.Close()
 // }
 
-// func updateCutting(cutting *Cutting) {
+// func updateLooseLeaf(looseLeaf *LooseLeaf) {
 // 	db := getGormConnect()
-// 	db.Save(&cutting)
+// 	db.Save(&looseLeaf)
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
@@ -44,9 +44,9 @@ func main() {
 // 	defer closeDb.Close()
 // }
 
-// func deleteCutting(cutting *Cutting) {
+// func deleteLooseLeaf(looseLeaf *LooseLeaf) {
 // 	db := getGormConnect()
-// 	db.Delete(&cutting)
+// 	db.Delete(&looseLeaf)
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
@@ -55,33 +55,33 @@ func main() {
 // 	defer closeDb.Close()
 // }
 
-// func findAllCuttings(user User, db *gorm.DB) []Cutting {
-// 	var cuttings []Cutting
+// func findAllLooseLeafs(user User, db *gorm.DB) []LooseLeaf {
+// 	var looseLeafs []LooseLeaf
 
 // 	// select文
-// 	db.Where("user_id = ?", user.ID).Find(&cuttings)
+// 	db.Where("user_id = ?", user.ID).Find(&looseLeafs)
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
 // 		panic(err.Error())
 // 	}
 // 	defer closeDb.Close()
-// 	return cuttings
+// 	return looseLeafs
 // }
 
-// func findCutting(user User, id string) Cutting {
+// func findLooseLeaf(user User, id string) LooseLeaf {
 // 	db := getGormConnect()
-// 	var cutting Cutting
+// 	var looseLeaf LooseLeaf
 
 // 	// select文
-// 	db.Where("user_id = ? and id = ?", user.ID, id).Find(&cutting)
+// 	db.Where("user_id = ? and id = ?", user.ID, id).Find(&looseLeaf)
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
 // 		panic(err.Error())
 // 	}
 // 	defer closeDb.Close()
-// 	return cutting
+// 	return looseLeaf
 // }
 
 // func paginate(page int, pageSize int) func(db *gorm.DB) *gorm.DB {
@@ -141,7 +141,7 @@ func main() {
 
 // 	db := getGormConnect()
 // 	db.AutoMigrate(&User{})
-// 	db.AutoMigrate(&Cutting{})
+// 	db.AutoMigrate(&LooseLeaf{})
 // 	closeDb, err := db.DB()
 
 // 	if err != nil {
@@ -161,45 +161,45 @@ func main() {
 // 		insertUser(&user)
 // 		c.JSON(http.StatusOK, user)
 // 	})
-// 	r.GET("/cuttings", func(c *gin.Context) {
+// 	r.GET("/looseLeafs", func(c *gin.Context) {
 // 		page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 // 		pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 // 		db := getGormConnect().Scopes(paginate(page, pageSize))
 // 		uid := c.MustGet("uid").(string)
 // 		user := findUser(uid)
-// 		cuttings := findAllCuttings(user, db.Order("ID desc"))
-// 		c.JSON(http.StatusOK, cuttings)
+// 		looseLeafs := findAllLooseLeafs(user, db.Order("ID desc"))
+// 		c.JSON(http.StatusOK, looseLeafs)
 // 	})
-// 	r.GET("/cuttings/:id", func(c *gin.Context) {
+// 	r.GET("/looseLeafs/:id", func(c *gin.Context) {
 // 		uid := c.MustGet("uid").(string)
 // 		user := findUser(uid)
-// 		cutting := findCutting(user, c.Param("id"))
-// 		c.JSON(http.StatusOK, cutting)
+// 		looseLeaf := findLooseLeaf(user, c.Param("id"))
+// 		c.JSON(http.StatusOK, looseLeaf)
 // 	})
-// 	r.POST("/cuttings", func(c *gin.Context) {
+// 	r.POST("/looseLeafs", func(c *gin.Context) {
 // 		uid := c.MustGet("uid").(string)
 // 		user := findUser(uid)
-// 		var cutting Cutting
-// 		c.BindJSON(&cutting)
-// 		cutting.UserID = user.ID
-// 		insertCutting(&cutting)
-// 		c.JSON(http.StatusOK, cutting)
+// 		var looseLeaf LooseLeaf
+// 		c.BindJSON(&looseLeaf)
+// 		looseLeaf.UserID = user.ID
+// 		insertLooseLeaf(&looseLeaf)
+// 		c.JSON(http.StatusOK, looseLeaf)
 // 	})
-// 	r.PUT("/cuttings/:id", func(c *gin.Context) {
+// 	r.PUT("/looseLeafs/:id", func(c *gin.Context) {
 // 		uid := c.MustGet("uid").(string)
 // 		user := findUser(uid)
-// 		cutting := findCutting(user, c.Param("id"))
-// 		requestBody := CuttingPutRequest{}
+// 		looseLeaf := findLooseLeaf(user, c.Param("id"))
+// 		requestBody := LooseLeafPutRequest{}
 // 		c.BindJSON(&requestBody)
-// 		cutting.Note = requestBody.Note
-// 		updateCutting(&cutting)
-// 		c.JSON(http.StatusOK, cutting)
+// 		looseLeaf.Content = requestBody.Content
+// 		updateLooseLeaf(&looseLeaf)
+// 		c.JSON(http.StatusOK, looseLeaf)
 // 	})
-// 	r.DELETE("/cuttings/:id", func(c *gin.Context) {
+// 	r.DELETE("/looseLeafs/:id", func(c *gin.Context) {
 // 		uid := c.MustGet("uid").(string)
 // 		user := findUser(uid)
-// 		cutting := findCutting(user, c.Param("id"))
-// 		deleteCutting(&cutting)
+// 		looseLeaf := findLooseLeaf(user, c.Param("id"))
+// 		deleteLooseLeaf(&looseLeaf)
 // 		c.JSON(http.StatusOK, "ok")
 // 	})
 // 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
