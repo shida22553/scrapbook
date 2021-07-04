@@ -27,7 +27,7 @@ func init() {
 
 	userController := controllers.NewUserController(NewSqlHandler())
 	looseLeafController := controllers.NewLooseLeafController(NewSqlHandler())
-	bookController := controllers.NewBookController(NewSqlHandler())
+	binderController := controllers.NewBinderController(NewSqlHandler())
 
 	router.POST("/users", func(c *gin.Context) { userController.Create(c) })
 	router.GET("/users", func(c *gin.Context) { userController.Index(c) })
@@ -37,11 +37,11 @@ func init() {
 	router.GET("/loose_leafs", func(c *gin.Context) { looseLeafController.Index(c) })
 	router.GET("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Show(c) })
 	router.DELETE("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Delete(c) })
-	router.POST("/books", func(c *gin.Context) { bookController.Create(c) })
-	router.PUT("/books/:id", func(c *gin.Context) { bookController.Update(c) })
-	router.GET("/books", func(c *gin.Context) { bookController.Index(c) })
-	router.GET("/books/:id", func(c *gin.Context) { bookController.Show(c) })
-	router.DELETE("/books/:id", func(c *gin.Context) { bookController.Delete(c) })
+	router.POST("/binders", func(c *gin.Context) { binderController.Create(c) })
+	router.PUT("/binders/:id", func(c *gin.Context) { binderController.Update(c) })
+	router.GET("/binders", func(c *gin.Context) { binderController.Index(c) })
+	router.GET("/binders/:id", func(c *gin.Context) { binderController.Show(c) })
+	router.DELETE("/binders/:id", func(c *gin.Context) { binderController.Delete(c) })
 
 	Router = router
 }
@@ -49,7 +49,7 @@ func init() {
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Firebase SDK のセットアップ
-		opt := option.WithCredentialsFile("my-scrapbook-dev-9f06fe374e05.json")
+		opt := option.WithCredentialsFile("my-scrapbinder-dev-9f06fe374e05.json")
 		app, err := firebase.NewApp(context.Background(), nil, opt)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)

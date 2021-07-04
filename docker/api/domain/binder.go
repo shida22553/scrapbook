@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Book struct {
+type Binder struct {
 	gorm.Model
 	Name   string
 	UserID uint

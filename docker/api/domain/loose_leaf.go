@@ -8,7 +8,7 @@ type LooseLeaf struct {
 	gorm.Model
 	Content string `gorm:"text"`
 	UserID  uint
-	// BookID uint
+	// BinderID uint
 	User User
-	// Book   Book
+	// Binder   Binder
 }
