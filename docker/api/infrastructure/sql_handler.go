@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"myapp/domain"
 	"myapp/interfaces/database"
 )
 
@@ -16,6 +17,10 @@ func NewSqlHandler() database.SqlHandler {
 	if err != nil {
 		panic(err.Error)
 	}
+	db.AutoMigrate(&domain.User{})
+	db.AutoMigrate(&domain.Binder{})
+	db.AutoMigrate(&domain.LooseLeaf{})
+
 	sqlHandler := new(SqlHandler)
 	sqlHandler.Conn = db
 	return sqlHandler

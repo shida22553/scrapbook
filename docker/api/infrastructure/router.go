@@ -49,7 +49,7 @@ func init() {
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Firebase SDK のセットアップ
-		opt := option.WithCredentialsFile("my-scrapbinder-dev-9f06fe374e05.json")
+		opt := option.WithCredentialsFile("my-scrapbook-dev-9f06fe374e05.json")
 		app, err := firebase.NewApp(context.Background(), nil, opt)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)
