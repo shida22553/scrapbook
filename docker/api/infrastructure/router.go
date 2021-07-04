@@ -27,6 +27,7 @@ func init() {
 
 	userController := controllers.NewUserController(NewSqlHandler())
 	cuttingController := controllers.NewCuttingController(NewSqlHandler())
+	bookController := controllers.NewBookController(NewSqlHandler())
 
 	router.POST("/users", func(c *gin.Context) { userController.Create(c) })
 	router.GET("/users", func(c *gin.Context) { userController.Index(c) })
@@ -36,6 +37,11 @@ func init() {
 	router.GET("/cuttings", func(c *gin.Context) { cuttingController.Index(c) })
 	router.GET("/cuttings/:id", func(c *gin.Context) { cuttingController.Show(c) })
 	router.DELETE("/cuttings/:id", func(c *gin.Context) { cuttingController.Delete(c) })
+	router.POST("/books", func(c *gin.Context) { bookController.Create(c) })
+	router.PUT("/books/:id", func(c *gin.Context) { bookController.Update(c) })
+	router.GET("/books", func(c *gin.Context) { bookController.Index(c) })
+	router.GET("/books/:id", func(c *gin.Context) { bookController.Show(c) })
+	router.DELETE("/books/:id", func(c *gin.Context) { bookController.Delete(c) })
 
 	Router = router
 }

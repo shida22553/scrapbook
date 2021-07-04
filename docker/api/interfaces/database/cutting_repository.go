@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	// "fmt"
 	"myapp/domain"
 )
 
@@ -10,7 +10,6 @@ type CuttingRepository struct {
 }
 
 func (repo *CuttingRepository) Create(cutting *domain.Cutting) (err error) {
-	fmt.Println("create-----")
 	if err = repo.Select("Note", "UserID").Create(cutting).Error; err != nil {
 		return
 	}
@@ -18,7 +17,6 @@ func (repo *CuttingRepository) Create(cutting *domain.Cutting) (err error) {
 }
 
 func (repo *CuttingRepository) Update(cutting *domain.Cutting) (err error) {
-	fmt.Println("udpdate-----")
 	if err = repo.Save(cutting).Error; err != nil {
 		return
 	}
