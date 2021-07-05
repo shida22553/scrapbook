@@ -31,7 +31,8 @@ func init() {
 
 	router.POST("/users", func(c *gin.Context) { userController.Create(c) })
 	router.GET("/users", func(c *gin.Context) { userController.Index(c) })
-	router.GET("/users/:id", func(c *gin.Context) { userController.Show(c) })
+	router.PUT("/users/:id", func(c *gin.Context) { userController.Update(c) })
+	router.GET("/user", func(c *gin.Context) { userController.ShowCurrentUser(c) })
 	router.POST("/loose_leafs", func(c *gin.Context) { looseLeafController.Create(c) })
 	router.PUT("/loose_leafs/:id", func(c *gin.Context) { looseLeafController.Update(c) })
 	router.GET("/loose_leafs", func(c *gin.Context) { looseLeafController.Index(c) })

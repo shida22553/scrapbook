@@ -33,21 +33,8 @@ export default {
   methods: {
     async signin () {
       const self = this
-      const userCredential = await self.$fire.auth.signInWithEmailAndPassword(self.user.email, self.user.password)
-      const token = await userCredential.user.getIdToken(true)
-      await self.$axios
-        .$get('/users', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          data: {}
-        })
-        .then(function (response) {
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      await self.$fire.auth.signInWithEmailAndPassword(self.user.email, self.user.password)
+      location.href = '/'
     }
   }
 }

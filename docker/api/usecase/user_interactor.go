@@ -11,6 +11,11 @@ func (interactor *UserInteractor) Add(user domain.User) (id uint, err error) {
 	return
 }
 
+func (interactor *UserInteractor) Update(user *domain.User) (err error) {
+	err = interactor.UserRepository.Update(user)
+	return
+}
+
 func (interactor *UserInteractor) Users() (users []domain.User, err error) {
 	users, err = interactor.UserRepository.FindAll()
 	return

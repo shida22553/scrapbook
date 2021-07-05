@@ -14,6 +14,11 @@ func (repo *UserRepository) Create(user domain.User) (id uint, err error) {
 	return
 }
 
+func (repo *UserRepository) Update(user *domain.User) (err error) {
+	err = repo.Select("Name").Save(user).Error
+	return
+}
+
 func (repo *UserRepository) FindByUid(uid string) (user domain.User, err error) {
 	if err = repo.First(&user, "uid = ?", uid).Error; err != nil {
 		return

@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <h1>Welcome <span v-if="currentUser">{{ currentUser.email }}</span></h1>
-    <v-btn class="mr-4" @click="signout">
-      signout
-    </v-btn>
-    <div v-if="currentUser != null">
-      <LooseLeafList />
-    </div>
-  </div>
+  <v-row>
+    <v-col>
+      <div v-if="currentUser != null">
+        <LooseLeafList />
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -25,11 +23,7 @@ export default {
     }
   },
   methods: {
-    async signout () {
-      const self = this
-      await self.$fire.auth.signOut()
-      location.reload()
-    }
+
   }
 }
 </script>
