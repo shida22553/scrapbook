@@ -1,6 +1,6 @@
 <template>
   <v-card-text>
-    <v-form v-show="isEditMode">
+    <v-form v-show="isEditMode" @submit.prevent = "">
       <v-text-field
         label="Name"
         v-model="binder.Name"
