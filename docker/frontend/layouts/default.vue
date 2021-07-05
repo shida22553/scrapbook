@@ -2,21 +2,23 @@
   <v-app dark>
     <v-main>
       <v-container fluid>
-        <v-row class="ma-2" v-show="$route.path !== '/user'">
-          <v-spacer></v-spacer>
-          <v-btn to="/user" icon nuxt>
-            <v-icon>
-              mdi-account
-            </v-icon>
-          </v-btn>
-        </v-row>
-        <v-row class="ma-2" v-show="$route.path === '/user'">
-          <v-btn to="/" icon nuxt>
-            <v-icon>
-              mdi-arrow-left
-            </v-icon>
-          </v-btn>
-        </v-row>
+        <div v-show="currentUser != null">
+          <v-row class="ma-2" v-show="$route.path !== '/user'">
+            <v-spacer></v-spacer>
+            <v-btn to="/user" icon nuxt>
+              <v-icon>
+                mdi-account
+              </v-icon>
+            </v-btn>
+          </v-row>
+          <v-row class="ma-2" v-show="$route.path === '/user'">
+            <v-btn to="/" icon nuxt>
+              <v-icon>
+                mdi-arrow-left
+              </v-icon>
+            </v-btn>
+          </v-row>
+        </div>
         <nuxt />
       </v-container>
     </v-main>
@@ -24,4 +26,21 @@
 </template>
 
 <script>
+export default {
+  components: {
+  },
+  data () {
+    return {
+
+    }
+  },
+  computed: {
+    currentUser () {
+      return this.$store.state.user
+    }
+  },
+  methods: {
+
+  }
+}
 </script>
