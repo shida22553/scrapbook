@@ -27,7 +27,7 @@ export default {
     InfiniteLoading
   },
   props: {
-
+    initialBinderId: String
   },
   data () {
     return {
@@ -38,7 +38,7 @@ export default {
       },
       page: 1,
       pageSize: 10,
-      binderId: null,
+      binderId: this.initialBinderId,
       loadButtonVisible: true,
       isNewMode: false,
       isWaitingResponse: false,
@@ -69,8 +69,8 @@ export default {
       if (looseLeaf.Content === '') { return }
       self.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      let createdLooseLeaf = null
 
-      console.log(token)
       await self.$axios
         .$post('/loose_leafs', {
           content: looseLeaf.Content
@@ -80,14 +80,20 @@ export default {
           }
         })
         .then(function (response) {
-          looseLeaf.Content = ''
-          self.looseLeafs.unshift(response)
+          createdLooseLeaf = response
           self.isWaitingResponse = false
         })
         .catch(function (error) {
           console.log(error)
           self.isWaitingReponse = false
         })
+      if (this.$route.query.binderId) {
+        const binderId = parseInt(this.$route.query.binderId)
+        await self.bind(createdLooseLeaf, binderId)
+        createdLooseLeaf.BinderID = binderId
+      }
+      looseLeaf.Content = ''
+      self.looseLeafs.unshift(createdLooseLeaf)
     },
     async infiniteHandler ($state) {
       const self = this
@@ -160,6 +166,25 @@ export default {
       const index = this.looseLeafs.findIndex(looseLeaf => looseLeaf.ID === id)
       this.looseLeafs.splice(index, 1)
       this.page = Math.ceil(this.looseLeafs.length / this.pageSize)
+    },
+    async bind (looseLeaf, binderId) {
+      const self = this
+      self.isWaitingResponse = true
+      const token = await self.$fire.auth.currentUser?.getIdToken(true)
+      await self.$axios
+        .$put(`/loose_leafs/${looseLeaf.ID}/binder`, {
+          BinderId: binderId
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(function (response) {
+          self.isWaitingResponse = false
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }

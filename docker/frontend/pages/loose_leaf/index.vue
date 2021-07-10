@@ -3,7 +3,7 @@
     <v-col>
       <div v-if="currentUser != null">
         <BinderMenu/>
-        <LooseLeafList :initialBinderId="null" />
+        <LooseLeafList :initialBinderId="$route.query.binderId" />
       </div>
     </v-col>
   </v-row>

@@ -19,7 +19,7 @@
             </v-btn>
           </v-row>
         </div>
-        <nuxt />
+        <nuxt :nuxt-child-key="$route.fullPath" />
       </v-container>
     </v-main>
   </v-app>
