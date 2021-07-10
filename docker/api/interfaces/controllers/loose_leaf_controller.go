@@ -75,7 +75,17 @@ func (controller *LooseLeafController) Index(c Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	looseLeafs, err := controller.LooseLeafInteractor.LooseLeafs(user, page, pageSize)
+	binderId := c.Query("binderId")
+	var looseLeafs []domain.LooseLeaf
+	var err error
+	if binderId == "" {
+		uintBinderId := (*uint)(nil)
+		looseLeafs, err = controller.LooseLeafInteractor.LooseLeafs(user, uintBinderId, page, pageSize)
+	} else {
+		intBinderId, _ := strconv.Atoi(binderId)
+		uintBinderId := uint(intBinderId)
+		looseLeafs, err = controller.LooseLeafInteractor.LooseLeafs(user, &uintBinderId, page, pageSize)
+	}
 	if err != nil {
 		c.JSON(500, nil)
 		return

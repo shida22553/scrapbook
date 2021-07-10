@@ -38,6 +38,7 @@ export default {
       },
       page: 1,
       pageSize: 10,
+      binderId: null,
       loadButtonVisible: true,
       isNewMode: false,
       isWaitingResponse: false,
@@ -114,10 +115,12 @@ export default {
           },
           params: {
             page: self.page,
-            pageSize: self.pageSize
+            pageSize: self.pageSize,
+            binderId: self.binderId
           }
         })
         .then(function (response) {
+          console.log(response)
           newLooseLeafs = response
         })
         .catch(function (error) {

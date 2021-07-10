@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	// "fmt"
 	"myapp/domain"
 )
 
@@ -28,8 +29,8 @@ func (interactor *LooseLeafInteractor) UpdateBinderID(looseLeaf domain.LooseLeaf
 	return
 }
 
-func (interactor *LooseLeafInteractor) LooseLeafs(user domain.User, page int, pageSize int) (looseLeafs []domain.LooseLeaf, err error) {
-	looseLeafs, err = interactor.LooseLeafRepository.FindAll(user, page, pageSize)
+func (interactor *LooseLeafInteractor) LooseLeafs(user domain.User, binderId *uint, page int, pageSize int) (looseLeafs []domain.LooseLeaf, err error) {
+	looseLeafs, err = interactor.LooseLeafRepository.FindAll(user, binderId, page, pageSize)
 	return
 }
 

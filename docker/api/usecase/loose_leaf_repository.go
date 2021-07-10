@@ -8,5 +8,5 @@ type LooseLeafRepository interface {
 	UpdateBinderID(domain.LooseLeaf) error
 	Delete(*domain.LooseLeaf) error
 	FindById(domain.User, uint) (domain.LooseLeaf, error)
-	FindAll(domain.User, int, int) ([]domain.LooseLeaf, error)
+	FindAll(domain.User, *uint, int, int) ([]domain.LooseLeaf, error)
 }

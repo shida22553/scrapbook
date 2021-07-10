@@ -47,9 +47,13 @@ func (repo *LooseLeafRepository) FindById(user domain.User, id uint) (looseLeaf 
 	return
 }
 
-func (repo *LooseLeafRepository) FindAll(user domain.User, page int, pageSize int) (looseLeafs []domain.LooseLeaf, err error) {
-	if err = repo.Where("user_id = ?", user.ID).Order("ID desc").Offset(page - 1).Limit(pageSize).Find(&looseLeafs).Error; err != nil {
-		return
+func (repo *LooseLeafRepository) FindAll(user domain.User, binderId *uint, page int, pageSize int) (looseLeafs []domain.LooseLeaf, err error) {
+	var query *gorm.DB
+	if binderId == (*uint)(nil) {
+		query = repo.Where("user_id = ?", user.ID)
+	} else {
+		query = repo.Where("user_id = ?", user.ID).Where("binder_id = ?", binderId)
 	}
+	err = query.Order("ID desc").Offset(page - 1).Limit(pageSize).Find(&looseLeafs).Error
 	return
 }
