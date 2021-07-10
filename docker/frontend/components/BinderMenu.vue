@@ -10,7 +10,7 @@
       :key="binder.ID"
       :name="binder.Name"
       :color="getBinderColor(index)"
-      :binderId="binder.ID"
+      :binderId="binder.ID.toString()"
     />
   </div>
 </template>

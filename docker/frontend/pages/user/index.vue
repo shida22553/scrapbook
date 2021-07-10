@@ -67,7 +67,7 @@ export default {
       })
       .then(function (response) {
         self.name = response.Name
-        self.id = response.Id
+        self.id = response.ID
         console.log(response)
       })
       .catch(function (error) {

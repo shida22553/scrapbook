@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -75,8 +74,9 @@ func authMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		log.Printf("Verified ID token: %v\n", token)
+		// fmt.Printf("Verified ID token: %v\n", token)
 		c.Set("uid", token.UID)
+		fmt.Printf("uid: %v\n", c.MustGet("uid"))
 		c.Next()
 	}
 }

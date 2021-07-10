@@ -35,8 +35,11 @@ export default {
       const self = this
       const userCredential = await self.$fire.auth.createUserWithEmailAndPassword(self.newUser.email, self.newUser.password)
       const token = await userCredential.user.getIdToken(true)
+      console.log(token)
       await self.$axios
-        .$post('/users', {}, {
+        .$post('/users', {
+          name: self.newUser.name
+        }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -46,6 +49,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
+          self.$fire.auth.signOut()
         })
     }
   }

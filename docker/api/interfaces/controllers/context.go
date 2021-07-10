@@ -10,4 +10,5 @@ type Context interface {
 	DefaultQuery(key, defaultValue string) string
 	Query(key string) string
 	Abort()
+	PostForm(key string) string
 }

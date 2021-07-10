@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"myapp/domain"
 	"myapp/interfaces/database"
 	"myapp/usecase"
@@ -8,6 +9,7 @@ import (
 
 type UserController struct {
 	Interactor usecase.UserInteractor
+	BaseController
 }
 
 type UserPutRequest struct {
@@ -21,12 +23,28 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 				SqlHandler: sqlHandler,
 			},
 		},
+		BaseController: BaseController{
+			UserInteractor: usecase.UserInteractor{
+				UserRepository: &database.UserRepository{
+					SqlHandler: sqlHandler,
+				},
+			},
+		},
 	}
 }
 
 func (controller *UserController) Create(c Context) {
-	u := domain.User{}
-	c.Bind(&u)
+	fmt.Printf("create: \n")
+	requestBody := UserPutRequest{}
+	c.BindJSON(&requestBody)
+	name := requestBody.Name
+	// fmt.Printf("must uid: %v\n", uid)
+	// fmt.Printf("uid: %v\n", c.Param("uid"))
+	fmt.Printf("name: %v\n", name)
+	u := domain.User{
+		Name: name,
+		Uid:  c.MustGet("uid").(string),
+	}
 	id, err := controller.Interactor.Add(u)
 	if err != nil {
 		c.JSON(500, nil)
@@ -36,12 +54,7 @@ func (controller *UserController) Create(c Context) {
 }
 
 func (controller *UserController) Update(c Context) {
-	uid := c.Param("uid")
-	user, err := controller.Interactor.UserByUid(uid)
-	if err != nil {
-		c.JSON(500, nil)
-		return
-	}
+	user := controller.findUser(c)
 	requestBody := UserPutRequest{}
 	c.BindJSON(&requestBody)
 	user.Name = requestBody.Name
@@ -63,11 +76,6 @@ func (controller *UserController) Index(c Context) {
 }
 
 func (controller *UserController) ShowCurrentUser(c Context) {
-	uid := c.Param("uid")
-	user, err := controller.Interactor.UserByUid(uid)
-	if err != nil {
-		c.JSON(500, nil)
-		return
-	}
+	user := controller.findUser(c)
 	c.JSON(200, user)
 }

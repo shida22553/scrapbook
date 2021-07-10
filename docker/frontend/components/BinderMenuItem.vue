@@ -18,7 +18,7 @@ export default {
   props: {
     color: String,
     name: String,
-    binderId: Number
+    binderId: String
   },
   data () {
     return {

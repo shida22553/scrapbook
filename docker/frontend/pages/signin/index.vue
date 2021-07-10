@@ -12,6 +12,7 @@
     <v-btn class="mr-4" @click="signin">
       signin
     </v-btn>
+    <nuxt-link to="/signup">Sign up</nuxt-link>
   </div>
 </template>
 
