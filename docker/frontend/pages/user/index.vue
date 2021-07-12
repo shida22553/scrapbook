@@ -68,7 +68,7 @@ export default {
       .then(function (response) {
         self.name = response.Name
         self.id = response.ID
-        console.log(response)
+        // console.log(response)
       })
       .catch(function (error) {
         console.log(error)
@@ -79,7 +79,7 @@ export default {
       const self = this
       self.isWaitingResponse = true
       const token = await self.$fire.auth.currentUser?.getIdToken(true)
-      console.log(self.name)
+      // console.log(self.name)
       await self.$axios
         .$put(`/users/${self.id}`, {
           name: self.name

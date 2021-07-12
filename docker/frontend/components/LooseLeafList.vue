@@ -55,7 +55,7 @@ export default {
         }
       })
       .then(function (response) {
-        console.log(response)
+        // console.log(response)
         self.binders.push(...response)
       })
       .catch(function (error) {
@@ -126,7 +126,7 @@ export default {
           }
         })
         .then(function (response) {
-          console.log(response)
+          // console.log(response)
           newLooseLeafs = response
         })
         .catch(function (error) {

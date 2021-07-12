@@ -4,12 +4,14 @@
     <v-text-field
       v-model="user.email"
       label="E-mail"
+      :rules="[required]"
     />
     <v-text-field
       v-model="user.password"
       label="Password"
+      :rules="[required]"
     />
-    <v-btn class="mr-4" @click="signin">
+    <v-btn class="mr-4" @click="signin" :disabled="disabled">
       signin
     </v-btn>
     <nuxt-link to="/signup">Sign up</nuxt-link>
@@ -21,14 +23,18 @@ export default {
   data () {
     return {
       user: {
-        email: '18051976@example.com',
+        email: '4124325221@example.com',
         password: 'password'
-      }
+      },
+      required: value => !!value || 'required'
     }
   },
   computed: {
     currentUser () {
       return this.$store.state.user
+    },
+    disabled () {
+      return !this.user.email || !this.user.password
     }
   },
   methods: {

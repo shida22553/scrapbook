@@ -40,7 +40,7 @@ export default {
           }
         })
         .then(function (response) {
-          console.log(response)
+          // console.log(response)
           self.$emit('replaceBinder', response)
           self.isWaitingResponse = false
         })

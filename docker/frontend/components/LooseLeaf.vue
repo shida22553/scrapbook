@@ -74,7 +74,7 @@ export default {
           }
         })
         .then(function (response) {
-          console.log(response)
+          // console.log(response)
           self.$emit('replaceLooseLeaf', response)
           self.isWaitingResponse = false
         })
@@ -93,7 +93,7 @@ export default {
           }
         })
         .then(function (response) {
-          console.log(response)
+          // console.log(response)
           self.$emit('removeLooseLeaf', id)
         })
         .catch(function (error) {

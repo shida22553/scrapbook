@@ -46,7 +46,7 @@ export default {
         }
       })
       .then(function (response) {
-        console.log(response)
+        // console.log(response)
         self.binders.push(...response)
       })
       .catch(function (error) {
