@@ -12,7 +12,7 @@
       indeterminate
       v-show="isWaitingResponse" />
     <div v-show="!isEditMode && !isWaitingResponse">
-      <div @click="clickContent">
+      <div @click="clickContent" class='pre-line'>
         {{ looseLeaf.Content || 'Add new loose leaf' }}
       </div>
       <v-chip-group
@@ -51,3 +51,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.pre-line {
+  white-space: pre-line;
+}
+</style>
