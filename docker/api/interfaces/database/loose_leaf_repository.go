@@ -54,6 +54,6 @@ func (repo *LooseLeafRepository) FindAll(user domain.User, binderId *uint, page 
 	} else {
 		query = repo.Where("user_id = ?", user.ID).Where("binder_id = ?", binderId)
 	}
-	err = query.Order("ID desc").Offset(page - 1).Limit(pageSize).Find(&looseLeafs).Error
+	err = query.Order("ID desc").Offset((page - 1) * pageSize).Limit(pageSize).Find(&looseLeafs).Error
 	return
 }

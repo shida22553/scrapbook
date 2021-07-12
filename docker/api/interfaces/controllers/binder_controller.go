@@ -69,7 +69,7 @@ func (controller *BinderController) Index(c Context) {
 	user := controller.findUser(c)
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	binders, err := controller.BinderInteractor.Binders(user, page, pageSize)
 	if err != nil {
 		c.JSON(500, nil)

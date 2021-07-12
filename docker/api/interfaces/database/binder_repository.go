@@ -38,7 +38,7 @@ func (repo *BinderRepository) FindById(user domain.User, id uint) (binder domain
 }
 
 func (repo *BinderRepository) FindAll(user domain.User, page int, pageSize int) (binders []domain.Binder, err error) {
-	if err = repo.Where("user_id = ?", user.ID).Order("ID desc").Offset(page - 1).Limit(pageSize).Find(&binders).Error; err != nil {
+	if err = repo.Where("user_id = ?", user.ID).Order("ID desc").Offset((page - 1) * pageSize).Limit(pageSize).Find(&binders).Error; err != nil {
 		return
 	}
 	return
