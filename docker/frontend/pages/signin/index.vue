@@ -23,8 +23,8 @@ export default {
   data () {
     return {
       user: {
-        email: '4124325221@example.com',
-        password: 'password'
+        email: '',
+        password: ''
       },
       required: value => !!value || 'required'
     }
