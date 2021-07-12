@@ -4,6 +4,7 @@
     label
     :color="color"
     :to="`loose_leaf?binderId=${binderId}`"
+    exact
     nuxt
   >
     <v-icon left>

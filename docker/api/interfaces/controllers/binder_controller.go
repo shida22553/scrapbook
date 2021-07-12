@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	// "fmt"
 	"myapp/domain"
 	"myapp/interfaces/database"
 	"myapp/usecase"
+	"reflect"
 	"strconv"
 )
 
@@ -39,9 +41,13 @@ func (controller *BinderController) Create(c Context) {
 
 	var binder domain.Binder
 	c.BindJSON(&binder)
+	binder.User = user
 	binder.UserID = user.ID
 	err := controller.BinderInteractor.Add(&binder)
-	if err != nil {
+	if reflect.TypeOf(err) == reflect.TypeOf(&usecase.CustomError{}) {
+		c.JSON(400, err)
+		return
+	} else {
 		c.JSON(500, nil)
 		return
 	}

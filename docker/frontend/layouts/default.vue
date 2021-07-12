@@ -4,7 +4,7 @@
       <v-container fluid>
         <div v-show="currentUser != null">
           <v-row class="ma-2">
-            <v-btn class="ma-2" to="/" icon nuxt>
+            <v-btn class="ma-2" v-show="$route.path !== '/'" to="/" icon nuxt>
               <v-icon>
                 mdi-arrow-left
               </v-icon>

@@ -64,8 +64,11 @@ export default {
           self.isWaitingResponse = false
         })
         .catch(function (error) {
-          console.log(error)
-          self.isWaitingReponse = false
+          console.log(error.response)
+          alert(error.response.data.Msg)
+          binder.Name = ''
+          self.isWaitingResponse = false
+          self.isNewMode = true
         })
     },
     async infiniteHandler ($state) {
@@ -139,7 +142,7 @@ export default {
     },
     getBinderColor (index) {
       const colors = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange']
-      const colorIndex = index % this.binders.length
+      const colorIndex = index % colors.length
       return colors[colorIndex] + ' darken-4'
     }
   }
