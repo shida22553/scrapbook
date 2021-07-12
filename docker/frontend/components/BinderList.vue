@@ -37,7 +37,7 @@ export default {
         Name: ''
       },
       page: 1,
-      pageSize: 10,
+      pageSize: 30,
       loadButtonVisible: true,
       isNewMode: false,
       isWaitingResponse: false
@@ -139,7 +139,7 @@ export default {
     },
     getBinderColor (index) {
       const colors = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange']
-      const colorIndex = Math.floor((index / this.binders.length) * colors.length)
+      const colorIndex = index % this.binders.length
       return colors[colorIndex] + ' darken-4'
     }
   }

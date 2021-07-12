@@ -6,6 +6,7 @@
         v-model="binder.Name"
         ref="nameTextField"
         @blur="submit"
+        @keyup.enter="submit"
       ></v-text-field>
     </v-form>
     <v-progress-circular
